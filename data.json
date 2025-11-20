@@ -3,12 +3,26 @@
         "nome":"Creatina Max Titanium",
         "descricao":"O suplemento mais estudado e comprovado pela ciência",
         "link":"https://www.maxtitanium.com.br/creatine-pote-300g/p?skuid=31"
-
     }
     ,
     {
         "nome":"Creatina Probiótica",
         "descricao":"O suplemento mais estudado e comprovado pela ciência",
         "link":"https://www.probiotica.com.br/creatine-pote-300g/p?skuid=31"
+    },
+    {
+        "nome":"Whey Protein Concentrado Growth",
+        "descricao":"Proteína de alto valor biológico para auxiliar na recuperação muscular.",
+        "link":"https://www.gsuplementos.com.br/whey-protein-concentrado-1kg-growth-supplements-p985936"
+    },
+    {
+        "nome":"Pré-treino Égide Max Titanium",
+        "descricao":"Fornece energia e foco para treinos mais intensos.",
+        "link":"https://www.maxtitanium.com.br/egide-pre-treino/p"
+    },
+    {
+        "nome":"Multivitamínico Growth",
+        "descricao":"Complexo de vitaminas e minerais essenciais para o dia a dia.",
+        "link":"https://www.gsuplementos.com.br/multivitaminico-120-caps-growth-supplements-p985943"
     }
 ]
