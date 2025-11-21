@@ -37,12 +37,14 @@ header h1 {
     text-align: center; /* Centraliza o texto (Mobile First) */
 }
 
+/* O container de busca é escondido por padrão no header (mobile-first) */
 div.search-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
     width: 100%;
+    display: none; 
 }
 
 div input {
@@ -294,6 +296,59 @@ article a:hover {
     border-color: var(--primary-color);
 }
 
+/* --- Estilos para a Busca no Menu Mobile --- */
+.search-menu-item {
+    /* margin-left: auto; - Removido para não empurrar para a direita */
+    display: flex;
+    align-items: center;
+}
+
+#search-icon-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    color: var(--secondary-color);
+}
+
+/* Quando o item de busca está ativo */
+.search-menu-item.active {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: calc(100% - 2rem);
+    background-color: var(--bg-color);
+    z-index: 11;
+}
+
+.search-menu-item.active .search-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.search-menu-item.active #input-busca {
+    font-size: 1rem;
+}
+
+.search-menu-item.active #botao-busca {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+/* Esconde o ícone de busca quando o campo está aberto */
+.search-menu-item.active #search-icon-mobile {
+    display: none;
+}
+
+/* Esconde o item de busca do menu em telas maiores */
+@media (min-width: 600px) {
+    .search-menu-item {
+        display: none;
+    }
+}
+
 
 /* --- Media Queries (Mobile First) --- */
 
@@ -316,8 +371,10 @@ article a:hover {
     }
 
     div.search-container {
+        display: flex; /* Mostra o container de busca no header novamente */
         flex-direction: row;
         width: auto;
+        
     }
 
     div input {

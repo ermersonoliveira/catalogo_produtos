@@ -32,6 +32,15 @@ function buscarProdutos() {
 
     // Renderiza apenas os produtos que passaram no filtro
     renderizarCards(produtosFiltrados);
+
+    // Após a busca, minimiza o campo de busca na versão mobile
+    const searchMenuItem = document.querySelector(".search-menu-item");
+    if (searchMenuItem) {
+        searchMenuItem.classList.remove("active");
+    }
+
+    // Limpa o campo de busca após a pesquisa
+    inputBusca.value = "";
 }
 
 // 3. Função para renderizar os cards na tela
@@ -57,6 +66,7 @@ function renderizarCards(dados) {
 // 4. Função para criar e injetar o menu de categorias
 function criarMenuCategorias() { 
     const categorias = ["Todos", "Creatina", "Whey", "Pré-treino", "Multivitamínico"];
+    const headerSearchContainer = document.querySelector("header .search-container");
     const nav = document.createElement("nav");
     nav.classList.add("category-menu");
 
@@ -78,6 +88,25 @@ function criarMenuCategorias() {
         li.appendChild(a);
         ul.appendChild(li);
     }
+
+    // Cria o item de busca para o menu mobile
+    const searchLi = document.createElement("li");
+    searchLi.classList.add("search-menu-item");
+    searchLi.innerHTML = `
+        <a href="#" id="search-icon-mobile">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+        </a>
+    `;
+    // Move o container de busca do header para dentro do item de lista no menu
+    searchLi.appendChild(headerSearchContainer);
+    ul.prepend(searchLi); // Adiciona o item de busca no início da lista
+
+    // Garante que o input e o botão tenham os IDs corretos para os listeners existentes
+    headerSearchContainer.querySelector('input').id = 'input-busca';
+    headerSearchContainer.querySelector('button').id = 'botao-busca';
 
     nav.appendChild(ul);
     // Insere o menu antes do elemento <main>
@@ -121,6 +150,24 @@ function adicionarListenersCategorias() {
         if (e.target.classList.contains("product-category")) {
             e.preventDefault();
             filtrarPorCategoria(e.target.dataset.category);
+        }
+    });
+
+    // Listener para o ícone de busca mobile
+    const searchIconMobile = document.getElementById("search-icon-mobile");
+    const searchMenuItem = document.querySelector(".search-menu-item");
+    searchIconMobile.addEventListener("click", (e) => {
+        e.preventDefault();
+        searchMenuItem.classList.toggle("active");
+        document.getElementById("input-busca").focus();
+    });
+
+    // Listener para fechar a busca ao clicar fora (mobile)
+    document.addEventListener("click", (e) => {
+        // Verifica se a busca está ativa e se o clique foi fora do componente de busca
+        if (searchMenuItem.classList.contains("active") && !searchMenuItem.contains(e.target)) {
+            // O e.target.closest('#search-icon-mobile') é para não fechar ao clicar no ícone para abrir
+            searchMenuItem.classList.remove("active");
         }
     });
 }
