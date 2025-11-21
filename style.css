@@ -194,6 +194,8 @@ article p {
     margin-top: 0.5rem; /* Margem superior para separar da descrição */
     text-transform: capitalize; /* Capitaliza a primeira letra da categoria */
     align-self: flex-start; /* Impede que a tag estique para a largura total do card */
+    cursor: pointer; /* Indica que a tag é clicável */
+    text-decoration: none; /* Remove o sublinhado padrão de links */
 }
 
 article p strong {

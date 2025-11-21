@@ -46,7 +46,7 @@ function renderizarCards(dados) {
         <img src="${dado.imagem}" alt="Imagem do produto ${dado.nome}">
         <h2>${dado.nome}</h2>
         <p>${dado.descricao}</p>
-        <span class="product-category">${dado.categoria}</span>
+        <a href="#" class="product-category" data-category="${dado.categoria}">${dado.categoria}</a>
         <p class="preco">${dado.preco}</p>
         <a href="${dado.link}" target="_blank">Saiba mais</a>
         `
@@ -55,12 +55,14 @@ function renderizarCards(dados) {
 }
 
 // 4. Função para criar e injetar o menu de categorias
-function criarMenuCategorias() {
+function criarMenuCategorias() { 
     const categorias = ["Todos", "Creatina", "Whey", "Pré-treino", "Multivitamínico"];
     const nav = document.createElement("nav");
     nav.classList.add("category-menu");
 
     const ul = document.createElement("ul");
+    // Adiciona um ID para facilitar a seleção posterior
+    ul.id = "category-list";
 
     for (const categoria of categorias) {
         const li = document.createElement("li");
@@ -82,26 +84,43 @@ function criarMenuCategorias() {
     document.body.insertBefore(nav, mainElement);
 }
 
-// 5. Função para adicionar os listeners de clique nos botões de categoria
+// 5. Função centralizada para filtrar produtos e atualizar a UI
+function filtrarPorCategoria(categoriaSelecionada) {
+    // Atualiza o menu principal para refletir a seleção
+    const menuLinks = document.querySelectorAll("#category-list a");
+    menuLinks.forEach(a => {
+        if (a.dataset.category === categoriaSelecionada) {
+            a.classList.add("active");
+        } else {
+            a.classList.remove("active");
+        }
+    });
+
+    // Filtra e renderiza os produtos
+    if (categoriaSelecionada === "todos") {
+        renderizarCards(dados); // Mostra todos os produtos
+    } else {
+        const produtosFiltrados = dados.filter(dado => dado.categoria === categoriaSelecionada);
+        renderizarCards(produtosFiltrados);
+    }
+}
+
+// 6. Função para adicionar os listeners de clique
 function adicionarListenersCategorias() {
-    const menuCategorias = document.querySelector(".category-menu ul");
-    menuCategorias.addEventListener("click", (event) => {
-        event.preventDefault(); // Previne o comportamento padrão do link
+    const menuCategorias = document.getElementById("category-list");
+    // Listener para o menu principal
+    menuCategorias.addEventListener("click", (e) => {
+        if (e.target.tagName === "A") {
+            e.preventDefault();
+            filtrarPorCategoria(e.target.dataset.category);
+        }
+    });
 
-        if (event.target.tagName === "A") {
-            // Remove a classe 'active' de todos os links
-            menuCategorias.querySelectorAll("a").forEach(a => a.classList.remove("active"));
-            // Adiciona a classe 'active' ao link clicado
-            event.target.classList.add("active");
-
-            const categoriaSelecionada = event.target.dataset.category;
-
-            if (categoriaSelecionada === "todos") {
-                renderizarCards(dados); // Mostra todos os produtos
-            } else {
-                const produtosFiltrados = dados.filter(dado => dado.categoria === categoriaSelecionada);
-                renderizarCards(produtosFiltrados);
-            }
+    // Listener para as tags nos cards (usando delegação de evento)
+    cardContainer.addEventListener("click", (e) => {
+        if (e.target.classList.contains("product-category")) {
+            e.preventDefault();
+            filtrarPorCategoria(e.target.dataset.category);
         }
     });
 }
