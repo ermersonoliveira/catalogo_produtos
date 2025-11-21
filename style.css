@@ -200,6 +200,28 @@ article p {
     text-decoration: none; /* Remove o sublinhado padrão de links */
 }
 
+.availability-warning {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Espaço entre o ícone e o texto */
+    margin: 0.5rem 0; /* Margem vertical */
+    padding: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.1); /* Fundo sutil */
+    border-left: 3px solid var(--tertiary-color); /* Destaque na lateral */
+    border-radius: 4px;
+}
+
+.availability-warning svg {
+    color: var(--tertiary-color);
+    flex-shrink: 0; /* Impede que o ícone seja espremido */
+}
+
+.availability-warning span {
+    font-size: 0.8rem;
+    color: var(--tertiary-color);
+    line-height: 1.4;
+}
+
 article p strong {
     color: var(--tertiary-color); /* Cor do texto em negrito */
     font-weight: 400; /* Peso da fonte */
