@@ -79,14 +79,14 @@ div input:focus {
     font-size: 1rem; /* Tamanho da fonte */
     white-space: nowrap; /* Impede a quebra de linha do texto */
     transition: background-color 0.2s ease, color 0.2s ease; /* Transição suave para cor de fundo e cor do texto */
-    background-color: var(--bg-color); /* Cor de fundo */
-    color: var(--secondary-color); /* Cor do texto */
-    border: 1px solid var(--bg-color); /* Adiciona uma borda */
+    background-color: var(--primary-color); /* Cor de fundo (destaque) */
+    color: var(--bg-color); /* Cor do texto (contraste) */
+    border: 1px solid var(--primary-color); /* Borda da mesma cor do fundo */
 }
 
 #botao-busca:hover {
-    background-color: var(--primary-color); /* Muda a cor de fundo ao passar o mouse */
-    color: var(--bg-color); /* Muda a cor do texto ao passar o mouse */
+    background-color: #a1c6f9; /* Um tom ligeiramente mais claro da cor primária no hover */
+    border-color: #a1c6f9;
     box-shadow: 0 0 0 0.1rem var(--primary-color); /* Adiciona uma sombra de caixa */
 }
 
@@ -98,6 +98,31 @@ main {
     max-width: 80rem; /* Largura máxima do conteúdo principal */
     margin: 2rem auto; /* Centraliza e adiciona margem vertical */
     padding: 0 1rem; /* Adiciona espaçamento lateral (Mobile First) */
+}
+
+.view-controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+    gap: 0.5rem;
+}
+
+.view-btn {
+    background: none;
+    border: 1px solid var(--tertiary-color);
+    color: var(--tertiary-color);
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+.view-btn.active {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    border-color: var(--primary-color);
 }
 
 .card-container {
@@ -158,6 +183,19 @@ article p {
     color: var(--secondary-color); /* Cor do texto */
 }
 
+.product-category {
+    display: inline-block; /* Para que padding e margin funcionem corretamente */
+    background-color: var(--tertiary-color); /* Cor de fundo da tag */
+    color: var(--bg-color); /* Cor do texto da tag */
+    padding: 0.25rem 0.75rem; /* Espaçamento interno */
+    border-radius: 0.75rem; /* Bordas arredondadas */
+    font-size: 0.8rem; /* Tamanho da fonte menor */
+    font-weight: 600; /* Peso da fonte */
+    margin-top: 0.5rem; /* Margem superior para separar da descrição */
+    text-transform: capitalize; /* Capitaliza a primeira letra da categoria */
+    align-self: flex-start; /* Impede que a tag estique para a largura total do card */
+}
+
 article p strong {
     color: var(--tertiary-color); /* Cor do texto em negrito */
     font-weight: 400; /* Peso da fonte */
@@ -205,6 +243,56 @@ article a:hover {
     color: var(--accent-color); /* Muda a cor do link ao passar o mouse (variável não definida) */
 }
 
+/* --- Menu de Categorias (Mobile) --- */
+.category-menu {
+    display: block; /* Visível por padrão (mobile first) */
+    padding: 0 1rem; /* Espaçamento lateral igual ao do main */
+    background-color: var(--bg-color); /* Mesma cor de fundo do header */
+    position: sticky; /* Fica fixo no topo junto com o header */
+    top: 98px; /* Posição abaixo do header (ajuste conforme a altura do seu header) */
+    z-index: 9; /* Abaixo do header, mas acima do conteúdo */
+    margin-bottom: 1rem; /* Espaço antes do conteúdo principal */
+    transition: top 0.2s ease; /* Adiciona transição para a mudança de altura do header */
+}
+
+.category-menu ul {
+    display: flex; /* Alinha os itens horizontalmente */
+    align-items: center;
+    overflow-x: auto; /* Habilita a rolagem horizontal */
+    gap: 0.75rem; /* Espaçamento entre os botões */
+    list-style: none; /* Remove os marcadores de lista */
+    padding: 0.5rem 0;
+    margin: 0;
+    -ms-overflow-style: none;  /* IE e Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Esconde a barra de rolagem para Webkit (Chrome, Safari) */
+.category-menu ul::-webkit-scrollbar {
+    display: none;
+}
+
+.category-menu a {
+    display: block;
+    padding: 0.5rem 1rem;
+    background-color: #292a2d; /* Fundo sutilmente mais claro */
+    color: var(--secondary-color);
+    text-decoration: none;
+    border-radius: 1rem; /* Bordas arredondadas */
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap; /* Impede que o texto quebre a linha */
+    border: 1px solid var(--tertiary-color);
+    transition: all 0.2s ease;
+}
+
+.category-menu a:hover, .category-menu a.active {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    border-color: var(--primary-color);
+}
+
+
 /* --- Media Queries (Mobile First) --- */
 
 /* Telas de Tablet (e celulares maiores na horizontal) */
@@ -217,6 +305,12 @@ article a:hover {
         flex-direction: row; /* Header na horizontal */
         justify-content: space-between;
         padding: 1rem 2rem;
+        height: 80px; /* Altura fixa para o header em telas maiores */
+    }
+
+    .category-menu {
+        top: 80px; /* Ajusta a posição do menu sticky para a nova altura do header */
+        padding: 0 2rem; /* Alinha o padding com o do header */
     }
 
     div.search-container {
@@ -246,6 +340,11 @@ article a:hover {
 @media (min-width: 992px) {
     .card-container {
         grid-template-columns: repeat(4, 1fr); /* 4 colunas */
+    }
+
+    .category-menu ul {
+        justify-content: center; /* Centraliza os itens do menu no desktop */
+        overflow-x: hidden; /* Remove a rolagem horizontal, pois todos os itens devem caber */
     }
 
     div input {
