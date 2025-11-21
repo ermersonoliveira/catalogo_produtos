@@ -40,8 +40,10 @@ function renderizarCards(dados) {
         let article = document.createElement("article");
         article.classList.add("card");
         article.innerHTML = `
+        <img src="${dado.imagem}" alt="Imagem do produto ${dado.nome}">
         <h2>${dado.nome}</h2>
         <p>${dado.descricao}</p>
+        <p class="preco">${dado.preco}</p>
         <a href="${dado.link}" target="_blank">Saiba mais</a>
         `
         cardContainer.appendChild(article);

@@ -2,27 +2,37 @@
     {
         "nome":"Creatina Max Titanium",
         "descricao":"O suplemento mais estudado e comprovado pela ciência",
-        "link":"https://www.maxtitanium.com.br/creatine-pote-300g/p?skuid=31"
+        "link":"https://www.maxtitanium.com.br/creatine-pote-300g/p?skuid=31",
+        "imagem": "https://cdn.awsli.com.br/800x800/1563/1563255/produto/237823815/max-crea-u1ttfuwwu0.png",
+        "preco": "R$ 89,90"
     }
     ,
     {
         "nome":"Creatina Probiótica",
         "descricao":"O suplemento mais estudado e comprovado pela ciência",
-        "link":"https://www.probiotica.com.br/creatine-pote-300g/p?skuid=31"
+        "link":"https://www.probiotica.com.br/creatine-pote-300g/p?skuid=31",
+        "imagem": "https://cdn.shoppub.io/cdn-cgi/image/w=1000,h=1000,q=80,f=auto/gsn/media/uploads/produtos/foto/vipkdiri/creatina-300g-probiotica.png",
+        "preco": "R$ 75,50"
     },
     {
         "nome":"Whey Protein Concentrado Growth",
         "descricao":"Proteína de alto valor biológico para auxiliar na recuperação muscular.",
-        "link":"https://www.gsuplementos.com.br/whey-protein-concentrado-1kg-growth-supplements-p985936"
+        "link":"https://www.gsuplementos.com.br/whey-protein-concentrado-1kg-growth-supplements-p985936",
+        "imagem": "https://i.promobit.com.br/268/839410190517635043115698094861.png",
+        "preco": "R$ 99,00"
     },
     {
         "nome":"Pré-treino Égide Max Titanium",
         "descricao":"Fornece energia e foco para treinos mais intensos.",
-        "link":"https://www.maxtitanium.com.br/egide-pre-treino/p"
+        "link":"https://www.maxtitanium.com.br/egide-pre-treino/p",
+        "imagem": "https://lojamaxtitanium.vtexassets.com/arquivos/ids/156171/Design-sem-nome--1-.png",
+        "preco": "R$ 125,00"
     },
     {
         "nome":"Multivitamínico Growth",
         "descricao":"Complexo de vitaminas e minerais essenciais para o dia a dia.",
-        "link":"https://www.gsuplementos.com.br/multivitaminico-120-caps-growth-supplements-p985943"
+        "link":"https://www.gsuplementos.com.br/multivitaminico-120-caps-growth-supplements-p985943",
+        "imagem": "https://shopmaromba.com.br/wp-content/uploads/2023/08/MULTIVITAMINICO-120CAPS.png",
+        "preco": "R$ 39,90"
     }
 ]

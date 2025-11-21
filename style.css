@@ -12,7 +12,7 @@
 }
 
 body {
-    margin: 0; /* Remove a margem padrão do body */
+    margin: 0;
     background: var(--bg-color); /* Define a cor de fundo usando uma variável */
     color: var(--secondary-color); /* Define a cor do texto padrão usando uma variável */
     font-family: "Quicksand", sans-serif; /* Define a família da fonte */
@@ -20,14 +20,13 @@ body {
 
 header {
     padding: 2rem 1rem; /* Espaçamento interno (2rem em cima/baixo, 1rem nos lados) */
-    display: flex; /* Habilita o layout flexbox */
-    align-items: center; /* Alinha os itens verticalmente ao centro */
-    justify-content: space-around; /* Distribui os itens com espaço ao redor */
+    display: flex;
+    flex-direction: column; /* Organiza os itens do cabeçalho em coluna (Mobile First) */
+    align-items: center;
     position: sticky; /* Mantém o cabeçalho fixo no topo ao rolar a página */
     top: 0; /* Posição do topo quando sticky */
     background: var(--bg-color); /* Cor de fundo do cabeçalho */
     z-index: 10; /* Define a ordem de empilhamento para ficar sobre outros elementos */
-    border-bottom: 1px solid var(--bg-color); /* Adiciona uma borda inferior */
     gap: 1rem; /* Espaçamento entre os elementos flex */
 }
 
@@ -35,7 +34,15 @@ header h1 {
     font-size: 1.5rem; /* Tamanho da fonte */
     margin: 0; /* Remove a margem padrão */
     font-weight: 500; /* Peso da fonte (médio) */
-    white-space: nowrap; /* Impede a quebra de linha do texto */
+    text-align: center; /* Centraliza o texto (Mobile First) */
+}
+
+div.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
 }
 
 div input {
@@ -44,11 +51,10 @@ div input {
     border: 1px solid var(--tertiary-color); /* Define a borda */
     background: var(--bg-color); /* Cor de fundo */
     font-family: inherit; /* Herda a família da fonte do elemento pai */
-    font-size: 1.5rem; /* Tamanho da fonte */
+    font-size: 1.2rem; /* Tamanho da fonte para mobile */
     transition: all 0.2s ease; /* Adiciona uma transição suave para todas as propriedades */
-    width: 30rem; /* Largura do input */
+    width: 100%; /* Largura total (Mobile First) */
     color: var(--secondary-color); /* Cor do texto digitado */
-    margin-right: .5rem; /* Margem à direita */
 }
 
 div input::placeholder {
@@ -89,39 +95,60 @@ div input:focus {
 }
 
 main {
-    overflow-y: scroll; /* Adiciona uma barra de rolagem vertical se o conteúdo exceder a altura */
     max-width: 80rem; /* Largura máxima do conteúdo principal */
-    margin: 0 auto; /* Centraliza o conteúdo principal horizontalmente */
-    margin-top: 2rem; /* Margem no topo */
-    height: calc(100vh - 10rem - 4rem); /* Calcula a altura para preencher o espaço restante da tela */
+    margin: 2rem auto; /* Centraliza e adiciona margem vertical */
+    padding: 0 1rem; /* Adiciona espaçamento lateral (Mobile First) */
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: 1fr; /* 1 coluna por padrão (Mobile First) */
+    gap: 1.5rem;
 }
 
 article {
-    background: none; /* Sem cor de fundo */
-    border-radius: 0; /* Sem bordas arredondadas */
-    padding: 0; /* Remove o padding */
-    padding: 0 1rem; /* Espaçamento interno nos lados */
-    margin-bottom: 1.25rem; /* Margem inferior */
-    box-shadow: none; /* Sem sombra */
-    transition: background-color 0.3s ease, border-bottom-color 0.3s ease; /* Transição suave */
-    border-bottom: 1px solid var(--bg-color); /* Borda inferior */
-    padding-bottom: 1.5rem; /* Espaçamento interno inferior */
+    background: #292a2d; /* Fundo sutilmente mais claro para o card */
+    border-radius: 8px; /* Bordas arredondadas */
+    padding: 1rem; /* Espaçamento interno */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Sombra suave */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Transição suave */
+    display: flex; /* Habilita flexbox */
+    flex-direction: column; /* Organiza os itens em coluna */
 }
 
 article:hover {
+    /* Efeito hover apenas em telas maiores onde o mouse é comum */
     transform: scale(1.01); /* Aumenta ligeiramente o tamanho ao passar o mouse */
-    cursor: pointer; /* Muda o cursor para uma mão */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Aumenta a sombra ao passar o mouse */
 }
+
 
 article h2 {
     margin-top: 0; /* Remove a margem superior */
     font-weight: 600; /* Peso da fonte */
-    font-size: 1.6rem; /* Tamanho da fonte */
+    font-size: 1.3rem; /* Tamanho da fonte para mobile */
     border-bottom: none; /* Sem borda inferior */
     padding-bottom: 0; /* Sem espaçamento interno inferior */
     margin-bottom: 0.25rem; /* Margem inferior */
     color: var(--primary-color); /* Cor do texto */
 }
+
+article img {
+    width: 100%; /* Ocupa toda a largura do card */
+    aspect-ratio: 1 / 1; /* Proporção quadrada (altura igual à largura) */
+    object-fit: cover; /* Garante que a imagem cubra a área sem distorcer (pode cortar) */
+    border-radius: 4px; /* Bordas arredondadas para a imagem */
+    margin-bottom: 1rem; /* Espaço entre a imagem e o título */
+}
+
+.preco {
+    font-size: 1.5rem; /* Tamanho da fonte para dar destaque */
+    font-weight: 600; /* Fonte com peso maior (semi-bold) */
+    color: var(--primary-color); /* Usa a cor primária do projeto */
+    margin: 1rem 0; /* Espaçamento vertical para separar da descrição e do link */
+    text-align: center; /* Centraliza o preço no card */
+}
+
 
 article p {
     margin: 0.5rem 0; /* Margem superior e inferior */
@@ -147,15 +174,12 @@ article a:hover {
 }
 
 .footer {
-    position: absolute; /* Posicionamento absoluto em relação ao elemento pai posicionado */
-    bottom: 0; /* Alinha na parte inferior */
-    left: 0; /* Alinha à esquerda */
+    position: static; /* Posição padrão, flui com o conteúdo */
     width: 100%; /* Largura total */
     color: var(--tertiary-color); /* Cor do texto */
     background-color: var(--bg-color); /* Cor de fundo */
-    padding: 15px 20px; /* Espaçamento interno */
     border-top: 1px solid #3c4043; /* Borda superior */
-    font-size: 0.8rem; /* Tamanho da fonte */
+    font-size: 0.75rem;
 }
 
 .footer-location {
@@ -168,7 +192,7 @@ article a:hover {
     display: flex; /* Habilita o layout flexbox */
     flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha */
     justify-content: center; /* Centraliza os itens horizontalmente */
-    gap: 15px; /* Espaçamento entre os links */
+    gap: 1.5rem; /* Espaçamento entre os links */
 }
 
 .footer-links a {
@@ -181,60 +205,54 @@ article a:hover {
     color: var(--accent-color); /* Muda a cor do link ao passar o mouse (variável não definida) */
 }
 
-@media (max-width: 768px) {
-    header { /* Estilos para telas com largura máxima de 768px */
-        flex-direction: column; /* Organiza os itens do cabeçalho em coluna */
-        padding: 1rem; /* Reduz o espaçamento interno */
+/* --- Media Queries (Mobile First) --- */
+
+/* Telas de Tablet (e celulares maiores na horizontal) */
+@media (min-width: 600px) {
+    .card-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 colunas */
     }
 
-    header h1 { /* Estilos para o h1 no cabeçalho em telas menores */
-        text-align: center; /* Centraliza o texto */
-        margin-bottom: 1rem; /* Adiciona margem inferior */
+    header {
+        flex-direction: row; /* Header na horizontal */
+        justify-content: space-between;
+        padding: 1rem 2rem;
     }
 
-    div input { /* Estilos para o input em telas menores */
-        width: 90vw; /* Largura baseada na largura da viewport */
-        font-size: 1.2rem; /* Reduz o tamanho da fonte */
+    div.search-container {
+        flex-direction: row;
+        width: auto;
     }
 
-    main { /* Estilos para o main em telas menores */
-        padding: 0 1rem; /* Adiciona espaçamento lateral */
+    div input {
+        width: 20rem; /* Largura fixa para o input */
+        font-size: 1.5rem;
     }
 
-    article:hover { /* Estilos para o article em telas menores */
-        transform: none; /* Remove o efeito de escala ao passar o mouse */
+    article h2 {
+        font-size: 1.4rem;
     }
 }
 
-@media (max-width: 480px) {
-    header h1 { /* Estilos para o h1 em telas com largura máxima de 480px */
-        font-size: 1rem; /* Reduz ainda mais o tamanho da fonte */
-        max-width: 70%; /* Define uma largura máxima */
-        word-wrap: break-word; /* Permite a quebra de palavras longas */
+/* Efeito hover apenas em telas maiores onde o mouse é comum */
+@media (hover: none) {
+    article:hover {
+        transform: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+}
+
+/* Telas de Desktop */
+@media (min-width: 992px) {
+    .card-container {
+        grid-template-columns: repeat(4, 1fr); /* 4 colunas */
     }
 
-    div input, /* Estilos para o input e seu placeholder em telas muito pequenas */
-    div input::placeholder {
-        font-size: 1rem; /* Reduz o tamanho da fonte */
+    div input {
+        width: 30rem; /* Aumenta a largura do input */
     }
 
-    article h2 { /* Estilos para o h2 do article em telas muito pequenas */
-        font-size: 1.3rem; /* Reduz o tamanho da fonte */
-    }
-
-    div { /* Estilos para a div do cabeçalho em telas muito pequenas */
-        display: flex; /* Habilita flexbox */
-        align-items: center; /* Alinha itens ao centro */
-        justify-content: center; /* Centraliza itens */
-        flex-direction: column; /* Organiza em coluna */
-        gap: 0.5rem; /* Espaçamento entre os itens */
-    }
-
-    .footer { /* Estilos para o rodapé em telas muito pequenas */
-        display: none; /* Oculta o rodapé */
-    }
-
-    button { /* Estilos para o botão em telas muito pequenas */
-        margin-top: 1rem; /* Adiciona margem no topo */
+    article h2 {
+        font-size: 1.6rem;
     }
 }
