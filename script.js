@@ -11,6 +11,7 @@ async function carregarProdutos() {
     dados = await resposta.json();
     renderizarCards(dados);
     criarMenuCategorias();
+    ajustarPosicaoMenuCategoria(); // Adicionado para ajustar a posição do menu
     adicionarListenersCategorias();
 }
 
@@ -191,6 +192,28 @@ function adicionarListenersCategorias() {
             searchMenuItem.classList.remove("active");
         }
     });
+}
+
+// 7. Função para ajustar a posição 'top' do menu de categorias dinamicamente
+function ajustarPosicaoMenuCategoria() {
+    const header = document.querySelector("header");
+    const categoryMenu = document.querySelector(".category-menu");
+
+    if (!header || !categoryMenu) return;
+
+    // Função que calcula e aplica a posição
+    const ajustarTop = () => {
+        const headerHeight = header.offsetHeight;
+        categoryMenu.style.top = `${headerHeight}px`;
+    };
+
+    // Ajusta a posição na primeira carga
+    ajustarTop();
+
+    // Usa ResizeObserver para reajustar caso a altura do header mude (ex: rotação do dispositivo)
+    // Esta é uma boa prática para garantir que o layout não quebre dinamicamente.
+    const observer = new ResizeObserver(ajustarTop);
+    observer.observe(header);
 }
 
 // Adiciona o evento de clique no botão de busca
