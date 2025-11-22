@@ -39,5 +39,22 @@
         "imagem": "https://shopmaromba.com.br/wp-content/uploads/2023/08/MULTIVITAMINICO-120CAPS.png",
         "preco": "R$ 39,90",
         "categoria": "multivitamínico"
+    },
+    {
+        "nome":"Vitamina C",
+        "descricao":"A vitamina C (ácido ascórbico) é um nutriente essencial que o corpo não produz e precisa ser obtido por meio de alimentos ou suplementos.",
+        "link":"https://www.gsuplementos.com.br/multivitaminico-120-caps-growth-supplements-p985943",
+        "imagem": "https://www.lojatiaraju.com.br/media/catalog/product/cache/e0c29fa99638964d54a149e46cdfd03e/v/i/vitamina_c_sf.png",
+        "preco": "R$ 39,90",
+        "categoria": "vitaminas"
+    },
+    {
+        "nome":"BCAA Growth",
+        "descricao":"O BCAA é a sigla para Branched Chain Amino Acids, isto é, aminoácidos de cadeia ramificada.",
+        "link":"https://www.gsuplementos.com.br/multivitaminico-120-caps-growth-supplements-p985943",
+        "imagem": "https://i.zst.com.br/thumbs/12/2f/14/-1103450211.jpg",
+        "preco": "R$ 39,90",
+        "categoria": "aminoácidos"
     }
+    
 ]

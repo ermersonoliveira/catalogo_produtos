@@ -55,7 +55,7 @@ function renderizarCards(dados) {
         <img src="${dado.imagem}" alt="Imagem do produto ${dado.nome}">
         <h2>${dado.nome}</h2>
         <p>${dado.descricao}</p>
-        <a href="#" class="product-category" data-category="${dado.categoria}">${dado.categoria}</a>
+        <a href="#" class="product-category" data-category="${dado.categoria.toLowerCase()}">${dado.categoria}</a>
         <p class="preco">${dado.preco}</p>
         <div class="availability-warning">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -73,7 +73,16 @@ function renderizarCards(dados) {
 
 // 4. Função para criar e injetar o menu de categorias
 function criarMenuCategorias() { 
-    const categorias = ["Todos", "Creatina", "Whey", "Pré-treino", "Multivitamínico"];
+    // Cria um Set para armazenar categorias únicas, evitando duplicatas.
+    const categoriasUnicas = new Set();
+    dados.forEach(dado => {
+        // Adiciona a categoria de cada produto ao Set.
+        categoriasUnicas.add(dado.categoria);
+    });
+
+    // Converte o Set para um Array, ordena em ordem alfabética e adiciona "Todos" no início.
+    const categorias = ["Todos", ...Array.from(categoriasUnicas).sort()];
+
     const headerSearchContainer = document.querySelector("header .search-container");
     const nav = document.createElement("nav");
     nav.classList.add("category-menu");
@@ -91,8 +100,10 @@ function criarMenuCategorias() {
         if (categoria === "Todos") {
             a.classList.add("active");
         }
-        // Adiciona um atributo de dados para facilitar o filtro
-        a.dataset.category = categoria.toLowerCase();
+        // Adiciona um atributo de dados para facilitar o filtro.
+        // Usamos toLowerCase() para garantir consistência, já que o filtro também usa.
+        // O texto exibido (a.textContent) mantém a capitalização original.
+        a.dataset.category = categoria.toLowerCase(); 
         li.appendChild(a);
         ul.appendChild(li);
     }
@@ -137,7 +148,9 @@ function filtrarPorCategoria(categoriaSelecionada) {
     if (categoriaSelecionada === "todos") {
         renderizarCards(dados); // Mostra todos os produtos
     } else {
-        const produtosFiltrados = dados.filter(dado => dado.categoria === categoriaSelecionada);
+        // Compara as categorias em minúsculas para garantir que o filtro funcione
+        // independentemente da capitalização ("Aminoácidos" vs "aminoácidos").
+        const produtosFiltrados = dados.filter(dado => dado.categoria.toLowerCase() === categoriaSelecionada);
         renderizarCards(produtosFiltrados);
     }
 }
