@@ -266,7 +266,7 @@ article a:hover {
 }
 
 .footer-links a:hover {
-    color: var(--accent-color); /* Muda a cor do link ao passar o mouse (variável não definida) */
+    color: var(--primary-color); /* Muda a cor do link ao passar o mouse */
 }
 
 /* --- Menu de Categorias (Mobile) --- */
@@ -358,6 +358,39 @@ article a:hover {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
 }
+
+/* Estilos para a logo no header */
+.header-logo-container {
+    display: flex;
+    gap: 0.5rem; /* Espaço entre a logo e o título */
+    align-items: center; /* Alinha verticalmente a logo e o título */
+}
+
+.logo-img {
+    width: 120px; /* Tamanho inicial da logo */
+    height: auto;
+    display: block; /* Remove espaço extra que a imagem pode ter como elemento inline */
+}
+
+.header-logo-container a{
+    display: flex;
+    align-items: center;
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: color 0.2s ease; /* Adiciona uma transição suave para a mudança de cor */
+}
+
+.header-logo-container a:hover{
+    color: var(--primary-color);
+}
+
+/* Media query para telas menores (ex: celulares) */
+@media (max-width: 600px) {
+    .logo-img {
+        width: 100px; /* Diminui a logo em telas menores */
+    }
+}
+
 
 /* Esconde o ícone de busca quando o campo está aberto */
 .search-menu-item.active #search-icon-mobile {
