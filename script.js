@@ -71,7 +71,6 @@ function renderizarCards(dados) {
             <span>Por favor, consultar a disponibilidade do produto.</span>
         </div>
         <div class="card-actions">
-            <a href="${dado.link}" target="_blank" class="btn-saiba-mais">Saiba mais</a>
             <button class="btn-adicionar-carrinho" data-id="${dado.id}">Adicionar ao carrinho</button>
         </div>
         `

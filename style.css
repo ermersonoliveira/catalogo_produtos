@@ -514,19 +514,13 @@ article a:hover {
 
 /* Container para os botões de ação no card */
 .card .card-actions {
-    display: flex;
-    justify-content: space-between; /* Alinha os botões nas extremidades */
-    align-items: center;
-    gap: 10px; /* Espaço entre os botões */
+    display: flex; /* Mantém o flex para o botão se expandir */
     margin-top: 1rem;
     width: 100%;
 }
 
 /* Estilo base para os botões de ação */
-.card .card-actions .btn-saiba-mais,
 .card .card-actions .btn-adicionar-carrinho {
-    flex-grow: 1; /* Faz os botões ocuparem o espaço disponível igualmente */
-    text-align: center;
     padding: 10px 0;
     border-radius: 5px;
     text-decoration: none;
@@ -537,16 +531,7 @@ article a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-/* Estilo específico para o botão "Saiba Mais" (mantendo o estilo original) */
-.card .card-actions .btn-saiba-mais {
-    background-color: #007bff;
-    color: white;
-}
-
-.card .card-actions .btn-saiba-mais:hover {
-    background-color: #0056b3;
+    width: 100%; /* Garante que o botão ocupe toda a largura */
 }
 
 /* Estilo para o novo botão "Adicionar ao Carrinho" */
@@ -703,7 +688,7 @@ article a:hover {
     border: none;
     color: var(--tertiary-color);
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0; /* Removido padding para melhor alinhamento */
     margin-left: 0.5rem;
     transition: color 0.2s ease, transform 0.2s ease;
 }
@@ -717,15 +702,17 @@ article a:hover {
     flex-grow: 1;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap; /* Permite que os itens quebrem em telas pequenas */
+    align-items: center; /* Alinha verticalmente os itens */
+    gap: 1rem; /* Aumenta o espaço entre os elementos */
+    /* flex-wrap foi removido para ter mais controle sobre o layout */
 }
 
 .cart-item-details {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    /* Permite que o nome do produto quebre a linha, evitando overflow */
+    min-width: 0;
 }
 
 .cart-item-unit-price {
@@ -780,6 +767,12 @@ article a:hover {
 
 .cart-item-name {
     font-weight: 500;
+    /* Garante que nomes de produtos muito longos não quebrem o layout */
+    word-break: break-word;
+}
+
+.cart-item-subtotal, .cart-item-remove {
+    flex-shrink: 0; /* Impede que o subtotal e o botão de remover sejam espremidos */
 }
 
 .cart-item-subtotal {
