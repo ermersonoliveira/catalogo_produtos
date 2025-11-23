@@ -301,20 +301,25 @@ function atualizarContadorCarrinho() {
 
 // 11. Função para adicionar um produto ao carrinho
 function adicionarAoCarrinho(productId, buttonElement) {
-    const produto = dados.find(d => d.id === productId);
+    const produtoNoCarrinho = carrinho.find(item => item.id === productId);
 
-    if (produto) {
-        // Verifica se o produto já está no carrinho para evitar duplicatas
-        const produtoJaExiste = carrinho.find(item => item.id === productId);
-        if (produtoJaExiste) {
-            // Se já existe, talvez incrementar a quantidade no futuro? Por enquanto, apenas avisamos.
-            console.log("Produto já está no carrinho.");
-            return; // Sai da função para não adicionar de novo
-        }
+    if (produtoNoCarrinho) {
+        // Se o produto já existe no carrinho, apenas incrementa a quantidade
+        produtoNoCarrinho.quantidade++;
+    } else {
+        // Se não existe, encontra o produto nos dados e adiciona ao carrinho com quantidade 1
+        const produto = dados.find(d => d.id === productId);
+        if (!produto) return; // Produto não encontrado nos dados
         carrinho.push(produto);
-        atualizarContadorCarrinho();
+        // Adiciona a propriedade quantidade. É importante clonar o objeto para não alterar o 'dados' original.
+        carrinho[carrinho.length - 1] = { ...produto, quantidade: 1 };
+    }
 
-        // Fornece feedback visual no botão
+    salvarCarrinhoNoLocalStorage();
+    atualizarContadorCarrinho();
+
+    // Fornece feedback visual no botão, apenas se o elemento for passado
+    if (buttonElement) {
         buttonElement.textContent = "Adicionado!";
         buttonElement.classList.add("added");
         buttonElement.disabled = true; // Desabilita para evitar múltiplos cliques
@@ -345,6 +350,10 @@ function criarModalCarrinho() {
             <div id="cart-items-container">
                 <!-- Os itens do carrinho serão inseridos aqui -->
             </div>
+            <div id="cart-footer">
+                <div class="cart-total">
+                </div>
+            </div>
         </div>
     `;
 
@@ -353,9 +362,16 @@ function criarModalCarrinho() {
     // Adiciona listeners para fechar o modal
     const closeBtn = document.getElementById('modal-close-btn');
     modalOverlay.addEventListener('click', (e) => {
-        // Fecha se clicar no overlay (fundo)
+        // Fecha se clicar no overlay (fundo) ou no botão de remover
         if (e.target === modalOverlay) {
             fecharModalCarrinho();
+        } else if (e.target.closest('.cart-item-remove')) {
+            const productId = parseInt(e.target.closest('.cart-item').dataset.id, 10);
+            removerItemDoCarrinho(productId);
+        } else if (e.target.closest('.quantity-btn')) {
+            const productId = parseInt(e.target.closest('.cart-item').dataset.id, 10);
+            const action = e.target.closest('.quantity-btn').dataset.action;
+            atualizarQuantidade(productId, action);
         }
     });
     closeBtn.addEventListener('click', fecharModalCarrinho);
@@ -370,32 +386,103 @@ function criarModalCarrinho() {
 
 function abrirModalCarrinho() {
     const modalOverlay = document.getElementById('cart-modal-overlay');
-    const itemsContainer = document.getElementById('cart-items-container');
+    renderizarItensCarrinho(); // Chama a função para renderizar os itens e o total
+    modalOverlay.classList.add('visible');
+    document.body.classList.add('body-no-scroll'); // Impede o scroll do fundo
+}
 
-    itemsContainer.innerHTML = ''; // Limpa o conteúdo anterior
+function renderizarItensCarrinho() {
+    const itemsContainer = document.getElementById('cart-items-container');
+    const cartFooter = document.getElementById('cart-footer');
+    itemsContainer.innerHTML = '';
 
     if (carrinho.length === 0) {
         itemsContainer.innerHTML = '<p class="cart-empty-message">Seu carrinho está vazio.</p>';
+        cartFooter.style.display = 'none'; // Esconde o rodapé se o carrinho estiver vazio
     } else {
         const ul = document.createElement('ul');
         ul.classList.add('cart-items-list');
+        let totalGeral = 0;
+
         carrinho.forEach(item => {
+            // Converte o preço "R$ 89,90" para um número 89.90
+            const precoNumerico = parseFloat(item.preco.replace('R$', '').replace('.', '').replace(',', '.').trim());
+            const subtotal = precoNumerico * item.quantidade;
+            totalGeral += subtotal;
+
             const li = document.createElement('li');
             li.classList.add('cart-item');
+            li.dataset.id = item.id; // Adiciona o ID do produto ao elemento LI
+
             li.innerHTML = `
                 <img src="${item.imagem}" alt="${item.nome}" class="cart-item-img">
                 <div class="cart-item-info">
-                    <span class="cart-item-name">${item.nome}</span>
-                    <span class="cart-item-price">${item.preco}</span>
+                    <div class="cart-item-details">
+                        <span class="cart-item-name">${item.nome}</span>
+                        <span class="cart-item-unit-price">${item.preco} (unid.)</span>
+                    </div>
+                    <div class="cart-item-quantity">
+                        <button class="quantity-btn" data-action="decrease" aria-label="Diminuir quantidade">-</button>
+                        <span class="quantity-value">${item.quantidade}</span>
+                        <button class="quantity-btn" data-action="increase" aria-label="Aumentar quantidade">+</button>
+                    </div>
+                    <span class="cart-item-subtotal">${subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                    <button class="cart-item-remove" aria-label="Remover item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    </button>
                 </div>
             `;
             ul.appendChild(li);
         });
         itemsContainer.appendChild(ul);
+
+        // Atualiza o total geral no rodapé do modal
+        const totalContainer = cartFooter.querySelector('.cart-total');
+        totalContainer.innerHTML = `
+            <span>Total Geral:</span>
+            <span class="total-price">${totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+        `;
+        cartFooter.style.display = 'flex'; // Mostra o rodapé
+    }
+}
+
+function atualizarQuantidade(productId, action) {
+    const itemNoCarrinho = carrinho.find(item => item.id === productId);
+    if (!itemNoCarrinho) return;
+
+    if (action === 'increase') {
+        itemNoCarrinho.quantidade++;
+    } else if (action === 'decrease') {
+        itemNoCarrinho.quantidade--;
+        if (itemNoCarrinho.quantidade <= 0) {
+            // Se a quantidade for 0 ou menos, remove o item
+            removerItemDoCarrinho(productId);
+            return; // Sai da função pois o item já foi removido
+        }
     }
 
-    modalOverlay.classList.add('visible');
-    document.body.classList.add('body-no-scroll'); // Impede o scroll do fundo
+    salvarCarrinhoNoLocalStorage();
+    atualizarContadorCarrinho();
+    // Re-renderiza os itens no modal se ele estiver aberto
+    if (document.getElementById('cart-modal-overlay').classList.contains('visible')) {
+        renderizarItensCarrinho();
+    }
+}
+
+function removerItemDoCarrinho(productId) {
+    // Filtra o carrinho, mantendo apenas os itens que NÃO têm o productId
+    carrinho = carrinho.filter(item => item.id !== productId);
+
+    salvarCarrinhoNoLocalStorage();
+    atualizarContadorCarrinho();
+    // Re-renderiza os itens no modal se ele estiver aberto
+    if (document.getElementById('cart-modal-overlay').classList.contains('visible')) {
+        renderizarItensCarrinho();
+    }
+}
+
+function salvarCarrinhoNoLocalStorage() {
+    localStorage.setItem('meuCarrinho', JSON.stringify(carrinho));
 }
 
 function fecharModalCarrinho() {
@@ -404,7 +491,7 @@ function fecharModalCarrinho() {
     document.body.classList.remove('body-no-scroll');
 }
 
-// Modifica a função criarIconeCarrinho para adicionar o listener de clique
+// 9. Função para criar e injetar o ícone do carrinho no header
 function criarIconeCarrinho() {
     const header = document.querySelector("header");
     if (!header) return;
@@ -425,6 +512,17 @@ function criarIconeCarrinho() {
     cartIconContainer.addEventListener('click', abrirModalCarrinho);
 }
 
+// 10. Função para atualizar o contador visual do carrinho
+function atualizarContadorCarrinho() {
+    const cartCounter = document.getElementById("cart-counter");
+    if (cartCounter) {
+        // Soma a quantidade de todos os itens no carrinho
+        const totalItens = carrinho.reduce((total, item) => total + item.quantidade, 0);
+        cartCounter.textContent = totalItens;
+        cartCounter.classList.add('updated');
+        setTimeout(() => cartCounter.classList.remove('updated'), 300);
+    }
+}
 function carregarCarrinhoDoLocalStorage() {
     const carrinhoSalvo = localStorage.getItem('meuCarrinho');
     if (carrinhoSalvo) {
