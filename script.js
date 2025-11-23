@@ -216,8 +216,45 @@ function ajustarPosicaoMenuCategoria() {
     observer.observe(header);
 }
 
+// 8. Função para criar e gerenciar o botão "Voltar ao Topo"
+function gerenciarBotaoVoltarAoTopo() {
+    // Cria o elemento do botão
+    const btnVoltarTopo = document.createElement("button");
+    btnVoltarTopo.id = "btn-voltar-topo";
+    btnVoltarTopo.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    `;
+    // Adiciona o botão ao corpo do documento
+    document.body.appendChild(btnVoltarTopo);
+
+    // Adiciona um listener para o evento de rolagem da página
+    window.addEventListener("scroll", () => {
+        // Mostra o botão se o usuário rolar mais que 40% da altura da janela (viewport).
+        // Isso faz o botão aparecer um pouco mais cedo.
+        if (window.scrollY > window.innerHeight * 0.4) {
+            btnVoltarTopo.classList.add("visible");
+        } else {
+            btnVoltarTopo.classList.remove("visible");
+        }
+    });
+
+    // Adiciona um listener para o clique no botão
+    btnVoltarTopo.addEventListener("click", () => {
+        // Rola a página suavemente para o topo
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    });
+}
+
 // Adiciona o evento de clique no botão de busca
 botaoBusca.addEventListener("click", buscarProdutos);
 
 // Chama a função para carregar os produtos assim que a página é carregada
 carregarProdutos();
+
+// Inicia a funcionalidade do botão "Voltar ao Topo"
+gerenciarBotaoVoltarAoTopo();
