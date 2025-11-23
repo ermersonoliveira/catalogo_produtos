@@ -1,8 +1,16 @@
 # 🚀 Play Suplementos: Catálogo Interativo e Funcional
 
+![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
+![HTML](https://img.shields.io/badge/HTML5-orange?logo=html5)
+![CSS](https://img.shields.io/badge/CSS3-blue?logo=css3)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow?logo=javascript)
+![Gemini](https://img.shields.io/badge/Gemini%20Code%20Assist-purple?logo=google)
+![License](https://img.shields.io/badge/license-MIT-green)
+
+
 ## 🌟 Visão Geral do Projeto
 
-Este projeto é um **Catálogo de Produtos** interativo e funcional, desenvolvido como parte da **Imersão Dev da Alura**, em colaboração com o **Google Gemini**. A **Play Suplementos** é a adaptação temática que transforma o projeto em uma loja de e-commerce focada em suplementos esportivos.
+Este projeto é um **Catálogo de Produtos** interativo e funcional, desenvolvido como parte da **Imersão _Dev da Alura**, em colaboração com o **Google Gemini**. A **Play Suplementos** é a adaptação temática que transforma o projeto em uma loja de e-commerce focada em suplementos esportivos.
 
 O objetivo foi criar uma experiência de compra ágil, focando na **usabilidade** e um **checkout simplificado**, demonstrando a capacidade de construir soluções de comércio eletrônico robustas com tecnologias *front-end* e otimizadas com IA.
 
@@ -10,7 +18,7 @@ O objetivo foi criar uma experiência de compra ágil, focando na **usabilidade*
 
 ## ✨ Funcionalidades em Destaque
 
-O catálogo foi desenhado para oferecer uma jornada de compra intuitiva e completa:
+O catálogo foi desenhado para oferecer uma jornada de compra simples, intuitiva e completa:
 
 * **Demonstração de Produtos:** Apresentação clara de cada item com imagem, nome, descrição e preço.
 * **Filtro de Busca Inteligente:** Permite a busca dinâmica por nome ou categoria, atualizando a lista de produtos em tempo real.
@@ -43,7 +51,7 @@ O desenvolvimento deste projeto foi potencializado com o uso do **Gemini Code As
 
 1.  **Clone o Repositório:**
     ```bash
-    git clone [SEU_LINK_DO_REPOSITORIO]
+    git clone [https://github.com/ermersonoliveira/catalogo_produtos]
     ```
 2.  **Acesse a Pasta:**
     ```bash
@@ -68,6 +76,6 @@ Para garantir a escalabilidade do projeto:
 
 | Detalhes | Informação |
 | :--- | :--- |
-| **Nome** | [Seu Nome Completo] |
-| **LinkedIn** | [Seu Link do Perfil do LinkedIn] |
-| **GitHub** | [Seu Link do Perfil do GitHub] |
+| **Nome** | [Ermerson Oliveira] |
+| **LinkedIn** | [https://www.linkedin.com/in/ermerson] |
+| **GitHub** | [https://github.com/ermersonoliveira] |
