@@ -667,14 +667,24 @@ article a:hover {
 .cart-item {
     display: flex;
     align-items: center;
+    align-items: center; /* Garante alinhamento vertical de todos os elementos */
     justify-content: space-between; /* Empurra o botão de remover para a direita */
     gap: 1rem;
     padding: 1rem 0;
+    overflow: hidden; /* Impede que a animação de escala do botão de remover cause overflow */
     border-bottom: 1px solid #3c4043;
 }
 
 .cart-item:last-child {
     border-bottom: none;
+}
+
+/* Classe para animar a remoção do item do carrinho */
+.cart-item.removing {
+    transition: all 0.3s ease-out;
+    transform: translateX(-100%);
+    opacity: 0;
+    max-height: 0; /* Adicionado para colapsar o espaço vertical */
 }
 
 .cart-item-img {
@@ -685,16 +695,23 @@ article a:hover {
 }
 
 .cart-item-remove {
-    background: none;
-    border: none;
+    background-color: #3c4043;
+    border: 1px solid var(--tertiary-color);
     color: var(--tertiary-color);
     cursor: pointer;
-    padding: 0; /* Removido padding para melhor alinhamento */
-    transition: color 0.2s ease, transform 0.2s ease;
+    width: 28px; /* Mesma largura dos botões de quantidade */
+    height: 28px; /* Mesma altura dos botões de quantidade */
+    border-radius: 50%; /* Transforma em círculo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease; /* Transição completa */
 }
 
 .cart-item-remove:hover {
-    color: #e63946; /* Vermelho para indicar remoção */
+    background-color: #e63946; /* Fundo vermelho para indicar remoção */
+    border-color: #e63946;
+    color: white; /* Ícone branco para contraste */
     transform: scale(1.1);
 }
 
@@ -704,7 +721,6 @@ article a:hover {
     justify-content: space-between;
     align-items: center; /* Alinha verticalmente os itens */
     gap: 1rem; /* Aumenta o espaço entre os elementos */
-    /* flex-wrap foi removido para ter mais controle sobre o layout */
 }
 
 .cart-item-details {
@@ -713,6 +729,11 @@ article a:hover {
     flex-grow: 1;
     /* Permite que o nome do produto quebre a linha, evitando overflow */
     min-width: 0;
+}
+
+.cart-item-remove svg {
+    width: 16px; /* Ajusta o tamanho do ícone */
+    height: 16px;
 }
 
 .cart-item-controls {
@@ -725,6 +746,7 @@ article a:hover {
 .cart-item-unit-price {
     font-size: 0.85rem;
     color: var(--tertiary-color);
+    padding: 0.25rem 0;
 }
 
 .cart-item-quantity {
@@ -746,12 +768,17 @@ article a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+    transition: all 0.2s ease; /* Transição completa para background, cor e transform */
 }
 
 .quantity-btn:hover {
     background-color: var(--tertiary-color);
     color: var(--bg-color);
+    transform: scale(1.1); /* Adiciona um leve aumento no hover */
+}
+
+.quantity-btn:active {
+    transform: scale(0.95); /* Efeito de clique para feedback imediato */
 }
 
 .quantity-value {

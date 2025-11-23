@@ -396,15 +396,17 @@ function renderizarItensCarrinho() {
 
             li.innerHTML = `
                 <img src="${item.imagem}" alt="${item.nome}" class="cart-item-img">
-                <div class="cart-item-info">
-                    <div class="cart-item-details">
-                        <span class="cart-item-name">${item.nome}</span>
-                        <span class="cart-item-unit-price">${item.preco} (unid.)</span>
-                    </div>
-                    <div class="cart-item-controls">
-                        <button class="quantity-btn" data-action="decrease" aria-label="Diminuir quantidade">-</button>
-                        <span class="quantity-value">${item.quantidade}</span>
-                        <button class="quantity-btn" data-action="increase" aria-label="Aumentar quantidade">+</button>
+                <div class="cart-item-info"> 
+                    <div class="cart-item-main">
+                        <div class="cart-item-details">
+                            <span class="cart-item-name">${item.nome}</span>
+                            <span class="cart-item-unit-price">${item.preco} (unid.)</span>
+                        </div>
+                        <div class="cart-item-controls">
+                            <button class="quantity-btn" data-action="decrease" aria-label="Diminuir quantidade">-</button>
+                            <span class="quantity-value">${item.quantidade}</span>
+                            <button class="quantity-btn" data-action="increase" aria-label="Aumentar quantidade">+</button>
+                        </div>
                     </div>
                     <span class="cart-item-subtotal">${subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                 </div>
@@ -450,14 +452,24 @@ function atualizarQuantidade(productId, action) {
 }
 
 function removerItemDoCarrinho(productId) {
-    // Filtra o carrinho, mantendo apenas os itens que NÃO têm o productId
-    carrinho = carrinho.filter(item => item.id !== productId);
+    const itemElement = document.querySelector(`.cart-item[data-id="${productId}"]`);
 
-    salvarCarrinhoNoLocalStorage();
-    atualizarContadorCarrinho();
-    // Re-renderiza os itens no modal se ele estiver aberto
-    if (document.getElementById('cart-modal-overlay').classList.contains('visible')) {
-        renderizarItensCarrinho();
+    if (itemElement) {
+        // Adiciona uma classe para iniciar a animação de remoção via CSS
+        itemElement.classList.add('removing');
+
+        // Aguarda a animação terminar (300ms, conforme definido no CSS) para então remover o item
+        // do array e re-renderizar o carrinho para atualizar o total.
+        setTimeout(() => {
+            // Filtra o carrinho, mantendo apenas os itens que NÃO têm o productId
+            carrinho = carrinho.filter(item => item.id !== productId);
+
+            salvarCarrinhoNoLocalStorage();
+            atualizarContadorCarrinho();
+            // Re-renderiza os itens no modal se ele estiver aberto
+            renderizarItensCarrinho();
+
+        }, 300); // O tempo deve ser igual à duração da transição no CSS
     }
 }
 
