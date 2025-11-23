@@ -825,3 +825,27 @@ article a:hover {
 #btn-voltar-topo:hover {
     background-color: #a1c6f9; /* Mesmo efeito hover dos outros botões */
 }
+
+/* Botão de Fechar Pedido no Modal */
+.btn-checkout {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.btn-checkout:hover {
+    background-color: #a1c6f9;
+    border-color: #a1c6f9;
+}
+
+.btn-checkout:active {
+    transform: scale(0.98);
+}

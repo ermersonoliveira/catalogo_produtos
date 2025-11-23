@@ -352,6 +352,7 @@ function criarModalCarrinho() {
             <div id="cart-footer">
                 <div class="cart-total">
                 </div>
+                <button id="btn-checkout" class="btn-checkout">Fechar Pedido</button>
             </div>
         </div>
     `;
