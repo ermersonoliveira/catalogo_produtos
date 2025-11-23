@@ -1,6 +1,6 @@
 # 🚀 Play Suplementos: Catálogo Interativo e Funcional
 
-![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
+![Status](https://img.shields.io/badge/status-completo-brightgreen)
 ![HTML](https://img.shields.io/badge/HTML5-orange?logo=html5)
 ![CSS](https://img.shields.io/badge/CSS3-blue?logo=css3)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow?logo=javascript)
@@ -51,7 +51,7 @@ O desenvolvimento deste projeto foi potencializado com o uso do **Gemini Code As
 
 1.  **Clone o Repositório:**
     ```bash
-    git clone [https://github.com/ermersonoliveira/catalogo_produtos]
+    git clone https://github.com/ermersonoliveira/catalogo_produtos
     ```
 2.  **Acesse a Pasta:**
     ```bash
@@ -76,6 +76,6 @@ Para garantir a escalabilidade do projeto:
 
 | Detalhes | Informação |
 | :--- | :--- |
-| **Nome** | [Ermerson Oliveira] |
-| **LinkedIn** | [https://www.linkedin.com/in/ermerson] |
-| **GitHub** | [https://github.com/ermersonoliveira] |
+| **Nome** | Ermerson Oliveira |
+| **LinkedIn** | https://www.linkedin.com/in/ermerson |
+| **GitHub** | https://github.com/ermersonoliveira |
