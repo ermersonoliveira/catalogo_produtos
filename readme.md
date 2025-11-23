@@ -1,4 +1,4 @@
-# 🚀 Play Suplementos: Catálogo Interativo e Funcional
+# 🚀 Play Suplementos: Catálogo de Produtos Interativo e Funcional
 
 ![Status](https://img.shields.io/badge/status-completo-brightgreen)
 ![HTML](https://img.shields.io/badge/HTML5-orange?logo=html5)
@@ -10,7 +10,9 @@
 ## 📸 Demonstração
 
 Confira o vídeo de demonstração no YouTube:  
+
 [![Assista à demonstração](https://img.shields.io/badge/YouTube-Play%20Video-red?logo=youtube)](https://www.youtube.com/watch?v=HKnbiznrwlA)
+
 
 ## 🌟 Visão Geral do Projeto
 
