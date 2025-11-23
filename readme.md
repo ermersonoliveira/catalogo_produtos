@@ -7,6 +7,10 @@
 ![Gemini](https://img.shields.io/badge/Gemini%20Code%20Assist-purple?logo=google)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
+## 📸 Demonstração
+
+Confira o vídeo de demonstração no YouTube:  
+[![Assista à demonstração](https://img.shields.io/badge/YouTube-Play%20Video-red?logo=youtube)](https://www.youtube.com/watch?v=HKnbiznrwlA)
 
 ## 🌟 Visão Geral do Projeto
 
