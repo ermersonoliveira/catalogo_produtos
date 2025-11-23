@@ -4,15 +4,19 @@ const botaoBusca = document.querySelector("#botao-busca");
 const mainElement = document.querySelector("main");
 
 let dados = [];
+let carrinho = [];
 
 // 1. Função para carregar os dados do JSON e renderizar todos os produtos na tela
 async function carregarProdutos() {
     let resposta = await fetch("data.json");
     dados = await resposta.json();
+    criarModalCarrinho();
+    criarIconeCarrinho();
     renderizarCards(dados);
     criarMenuCategorias();
     ajustarPosicaoMenuCategoria(); // Adicionado para ajustar a posição do menu
     adicionarListenersCategorias();
+    carregarCarrinhoDoLocalStorage(); // Carrega o carrinho ao iniciar
 }
 
 // 2. Função para filtrar os produtos com base no termo de busca
@@ -66,7 +70,10 @@ function renderizarCards(dados) {
             </svg>
             <span>Por favor, consultar a disponibilidade do produto.</span>
         </div>
-        <a href="${dado.link}" target="_blank">Saiba mais</a>
+        <div class="card-actions">
+            <a href="${dado.link}" target="_blank" class="btn-saiba-mais">Saiba mais</a>
+            <button class="btn-adicionar-carrinho" data-id="${dado.id}">Adicionar ao carrinho</button>
+        </div>
         `
         cardContainer.appendChild(article);
     }
@@ -165,6 +172,10 @@ function adicionarListenersCategorias() {
             e.preventDefault();
             filtrarPorCategoria(e.target.dataset.category);
         }
+        // Impede que o menu de busca mobile feche ao clicar dentro dele
+        if (e.target.closest('.search-menu-item')) {
+            e.stopPropagation();
+        }
     });
 
     // Listener para as tags nos cards (usando delegação de evento)
@@ -172,6 +183,13 @@ function adicionarListenersCategorias() {
         if (e.target.classList.contains("product-category")) {
             e.preventDefault();
             filtrarPorCategoria(e.target.dataset.category);
+        }
+
+        // Listener para o botão "Adicionar ao carrinho"
+        if (e.target.classList.contains("btn-adicionar-carrinho")) {
+            e.preventDefault();
+            const productId = parseInt(e.target.dataset.id, 10);
+            adicionarAoCarrinho(productId, e.target);
         }
     });
 
@@ -187,8 +205,7 @@ function adicionarListenersCategorias() {
     // Listener para fechar a busca ao clicar fora (mobile)
     document.addEventListener("click", (e) => {
         // Verifica se a busca está ativa e se o clique foi fora do componente de busca
-        if (searchMenuItem.classList.contains("active") && !searchMenuItem.contains(e.target)) {
-            // O e.target.closest('#search-icon-mobile') é para não fechar ao clicar no ícone para abrir
+        if (searchMenuItem.classList.contains("active") && !searchMenuItem.contains(e.target) && e.target.id !== 'search-icon-mobile') {
             searchMenuItem.classList.remove("active");
         }
     });
@@ -248,6 +265,172 @@ function gerenciarBotaoVoltarAoTopo() {
             behavior: "smooth"
         });
     });
+}
+
+// 9. Função para criar e injetar o ícone do carrinho no header
+function criarIconeCarrinho() {
+    const header = document.querySelector("header");
+    if (!header) return;
+
+    const cartIconContainer = document.createElement("div");
+    cartIconContainer.classList.add("cart-icon-container");
+    cartIconContainer.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span id="cart-counter" class="cart-counter">0</span>
+    `;
+    header.appendChild(cartIconContainer);
+}
+
+// 10. Função para atualizar o contador visual do carrinho
+function atualizarContadorCarrinho() {
+    const cartCounter = document.getElementById("cart-counter");
+    if (cartCounter) {
+        cartCounter.textContent = carrinho.length;
+        // Adiciona uma classe para animação quando um item é adicionado
+        cartCounter.classList.add('updated');
+        // Remove a classe após a animação para que possa ser reativada
+        setTimeout(() => {
+            cartCounter.classList.remove('updated');
+        }, 300);
+    }
+}
+
+// 11. Função para adicionar um produto ao carrinho
+function adicionarAoCarrinho(productId, buttonElement) {
+    const produto = dados.find(d => d.id === productId);
+
+    if (produto) {
+        // Verifica se o produto já está no carrinho para evitar duplicatas
+        const produtoJaExiste = carrinho.find(item => item.id === productId);
+        if (produtoJaExiste) {
+            // Se já existe, talvez incrementar a quantidade no futuro? Por enquanto, apenas avisamos.
+            console.log("Produto já está no carrinho.");
+            return; // Sai da função para não adicionar de novo
+        }
+        carrinho.push(produto);
+        atualizarContadorCarrinho();
+
+        // Fornece feedback visual no botão
+        buttonElement.textContent = "Adicionado!";
+        buttonElement.classList.add("added");
+        buttonElement.disabled = true; // Desabilita para evitar múltiplos cliques
+
+        setTimeout(() => {
+            buttonElement.textContent = "Adicionar ao carrinho";
+            buttonElement.classList.remove("added");
+            buttonElement.disabled = false;
+        }, 2000); // Reseta o botão após 2 segundos
+    }
+}
+
+// 12. Funções para criar e gerenciar o Modal do Carrinho
+function criarModalCarrinho() {
+    const modalOverlay = document.createElement('div');
+    modalOverlay.id = 'cart-modal-overlay';
+    modalOverlay.classList.add('modal-overlay');
+
+    modalOverlay.innerHTML = `
+        <div class="modal-content" id="cart-modal-content">
+            <button class="modal-close-btn" id="modal-close-btn" aria-label="Fechar modal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <h2>Meu Carrinho</h2>
+            <div id="cart-items-container">
+                <!-- Os itens do carrinho serão inseridos aqui -->
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modalOverlay);
+
+    // Adiciona listeners para fechar o modal
+    const closeBtn = document.getElementById('modal-close-btn');
+    modalOverlay.addEventListener('click', (e) => {
+        // Fecha se clicar no overlay (fundo)
+        if (e.target === modalOverlay) {
+            fecharModalCarrinho();
+        }
+    });
+    closeBtn.addEventListener('click', fecharModalCarrinho);
+
+    // Fecha o modal com a tecla 'Escape'
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            fecharModalCarrinho();
+        }
+    });
+}
+
+function abrirModalCarrinho() {
+    const modalOverlay = document.getElementById('cart-modal-overlay');
+    const itemsContainer = document.getElementById('cart-items-container');
+
+    itemsContainer.innerHTML = ''; // Limpa o conteúdo anterior
+
+    if (carrinho.length === 0) {
+        itemsContainer.innerHTML = '<p class="cart-empty-message">Seu carrinho está vazio.</p>';
+    } else {
+        const ul = document.createElement('ul');
+        ul.classList.add('cart-items-list');
+        carrinho.forEach(item => {
+            const li = document.createElement('li');
+            li.classList.add('cart-item');
+            li.innerHTML = `
+                <img src="${item.imagem}" alt="${item.nome}" class="cart-item-img">
+                <div class="cart-item-info">
+                    <span class="cart-item-name">${item.nome}</span>
+                    <span class="cart-item-price">${item.preco}</span>
+                </div>
+            `;
+            ul.appendChild(li);
+        });
+        itemsContainer.appendChild(ul);
+    }
+
+    modalOverlay.classList.add('visible');
+    document.body.classList.add('body-no-scroll'); // Impede o scroll do fundo
+}
+
+function fecharModalCarrinho() {
+    const modalOverlay = document.getElementById('cart-modal-overlay');
+    modalOverlay.classList.remove('visible');
+    document.body.classList.remove('body-no-scroll');
+}
+
+// Modifica a função criarIconeCarrinho para adicionar o listener de clique
+function criarIconeCarrinho() {
+    const header = document.querySelector("header");
+    if (!header) return;
+
+    const cartIconContainer = document.createElement("div");
+    cartIconContainer.classList.add("cart-icon-container");
+    cartIconContainer.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span id="cart-counter" class="cart-counter">0</span>
+    `;
+    header.appendChild(cartIconContainer);
+
+    // Adiciona o evento de clique para abrir o modal
+    cartIconContainer.addEventListener('click', abrirModalCarrinho);
+}
+
+function carregarCarrinhoDoLocalStorage() {
+    const carrinhoSalvo = localStorage.getItem('meuCarrinho');
+    if (carrinhoSalvo) {
+        carrinho = JSON.parse(carrinhoSalvo);
+        atualizarContadorCarrinho();
+    }
 }
 
 // Adiciona o evento de clique no botão de busca
