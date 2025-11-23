@@ -63,5 +63,14 @@
         "preco": "R$ 39,90",
         "categoria": "aminoácidos"
     }
-    
+    ,
+    {
+        "id": 8,
+        "nome": "Pré-treino Évora PW",
+        "descricao":"Os ativos criam as condições adequadas para a realização dos treinos mais intensos, retardando o desgaste físico.",
+        "link":"https://www.gsuplementos.com.br/multivitaminico-120-caps-growth-supplements-p985943",
+        "imagem": "https://cdn.awsli.com.br/2404/2404599/produto/169451737c62c5c1c55.jpg",
+        "preco": "R$ 89,90",
+        "categoria": "pré-treino"
+    }
 ]
