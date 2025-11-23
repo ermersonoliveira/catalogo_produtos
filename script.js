@@ -508,11 +508,16 @@ function finalizarPedido() {
     // Abre o WhatsApp em uma nova aba
     window.open(urlWhatsapp, '_blank');
 
-    // Limpa o carrinho após enviar o pedido
-    carrinho = [];
-    salvarCarrinhoNoLocalStorage();
-    fecharModalCarrinho(); // Fecha o modal
-    atualizarContadorCarrinho(); // Zera o contador visual
+    // Fecha o modal do carrinho imediatamente para o usuário ver a página principal.
+    fecharModalCarrinho();
+
+    // Aguarda 5 segundos antes de limpar o carrinho.
+    // Isso dá tempo para o usuário confirmar o envio no WhatsApp sem perder os dados do carrinho instantaneamente.
+    setTimeout(() => {
+        carrinho = [];
+        salvarCarrinhoNoLocalStorage();
+        atualizarContadorCarrinho(); // Zera o contador visual após o tempo de espera
+    }, 5000); // 5000 milissegundos = 5 segundos
 }
 
 function removerItemDoCarrinho(productId) {
