@@ -476,7 +476,7 @@ function atualizarQuantidade(productId, action) {
 }
 
 function finalizarPedido() {
-    const numeroWhatsapp = "5588992440504"; // Seu número de WhatsApp
+    const numeroWhatsapp = "5588900000000"; // Seu número de WhatsApp
 
     if (carrinho.length === 0) {
         // Idealmente, o botão não estaria visível, mas é uma boa prática ter essa verificação.
