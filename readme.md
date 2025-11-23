@@ -78,7 +78,7 @@ Para garantir a escalabilidade do projeto:
 
 ---
 
-## 👤 Desenvolvedor(a)
+## 👤 Desenvolvedor
 
 | Detalhes | Informação |
 | :--- | :--- |
