@@ -5,6 +5,7 @@ const mainElement = document.querySelector("main");
 
 let dados = [];
 let carrinho = [];
+let closeModalTimer = null; // Timer para fechar o modal automaticamente
 
 // 1. Função para carregar os dados do JSON e renderizar todos os produtos na tela
 async function carregarProdutos() {
@@ -374,11 +375,30 @@ function abrirModalCarrinho() {
 function renderizarItensCarrinho() {
     const itemsContainer = document.getElementById('cart-items-container');
     const cartFooter = document.getElementById('cart-footer');
+
+    // Limpa qualquer timer de fechamento automático anterior sempre que o carrinho for renderizado
+    if (closeModalTimer) {
+        clearInterval(closeModalTimer);
+        closeModalTimer = null;
+    }
+
     itemsContainer.innerHTML = '';
 
     if (carrinho.length === 0) {
-        itemsContainer.innerHTML = '<p class="cart-empty-message">Seu carrinho está vazio.</p>';
         cartFooter.style.display = 'none'; // Esconde o rodapé se o carrinho estiver vazio
+
+        // Inicia o contador para fechar o modal
+        let countdown = 5; // 5 segundos
+        itemsContainer.innerHTML = `<p class="cart-countdown-message">Seu carrinho está vazio. Fechando em ${countdown} segundos...</p>`;
+
+        closeModalTimer = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+                itemsContainer.innerHTML = `<p class="cart-countdown-message">Seu carrinho está vazio. Fechando em ${countdown} segundos...</p>`;
+            } else {
+                fecharModalCarrinho(); // Fecha o modal quando o contador chega a zero
+            }
+        }, 1000);
     } else {
         const ul = document.createElement('ul');
         ul.classList.add('cart-items-list');
@@ -479,6 +499,11 @@ function salvarCarrinhoNoLocalStorage() {
 
 function fecharModalCarrinho() {
     const modalOverlay = document.getElementById('cart-modal-overlay');
+    // Garante que o timer seja limpo ao fechar o modal (seja manualmente ou automaticamente)
+    if (closeModalTimer) {
+        clearInterval(closeModalTimer);
+        closeModalTimer = null;
+    }
     modalOverlay.classList.remove('visible');
     document.body.classList.remove('body-no-scroll');
 }

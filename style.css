@@ -821,6 +821,14 @@ article a:hover {
     padding: 2rem 0;
 }
 
+/* Estilo para a mensagem de contagem regressiva no carrinho vazio */
+.cart-countdown-message {
+    text-align: center;
+    color: var(--tertiary-color);
+    padding: 2rem 0;
+    font-style: italic;
+}
+
 /* Classe para impedir o scroll do body quando o modal está aberto */
 .body-no-scroll {
     overflow: hidden;
