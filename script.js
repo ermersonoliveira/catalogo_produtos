@@ -353,6 +353,10 @@ function criarModalCarrinho() {
             const productId = parseInt(e.target.closest('.cart-item').dataset.id, 10);
             const action = e.target.closest('.quantity-btn').dataset.action;
             atualizarQuantidade(productId, action);
+        } else if (e.target.id === 'btn-checkout') {
+            // Listener para o botão de finalizar pedido
+            e.preventDefault();
+            finalizarPedido();
         }
     });
     closeBtn.addEventListener('click', fecharModalCarrinho);
@@ -469,6 +473,46 @@ function atualizarQuantidade(productId, action) {
     if (document.getElementById('cart-modal-overlay').classList.contains('visible')) {
         renderizarItensCarrinho();
     }
+}
+
+function finalizarPedido() {
+    const numeroWhatsapp = "5588992440504"; // Seu número de WhatsApp
+
+    if (carrinho.length === 0) {
+        // Idealmente, o botão não estaria visível, mas é uma boa prática ter essa verificação.
+        alert("Seu carrinho está vazio. Adicione itens antes de finalizar o pedido.");
+        return;
+    }
+
+    let mensagem = "Olá! Gostaria de fazer o seguinte pedido:\n\n";
+    let totalGeral = 0;
+
+    // Monta a mensagem com os detalhes de cada item
+    carrinho.forEach(item => {
+        const precoNumerico = parseFloat(item.preco.replace('R$', '').replace('.', '').replace(',', '.').trim());
+        const subtotal = precoNumerico * item.quantidade;
+        totalGeral += subtotal;
+        mensagem += `*Produto:* ${item.nome}\n`;
+        mensagem += `*Quantidade:* ${item.quantidade}\n`;
+        mensagem += `*Subtotal:* ${subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n`;
+        mensagem += "--------------------------------------\n";
+    });
+
+    // Adiciona o total geral à mensagem
+    mensagem += `\n*TOTAL GERAL:* ${totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+
+    // Codifica a mensagem para ser usada em uma URL
+    const mensagemCodificada = encodeURIComponent(mensagem);
+    const urlWhatsapp = `https://wa.me/${numeroWhatsapp}?text=${mensagemCodificada}`;
+
+    // Abre o WhatsApp em uma nova aba
+    window.open(urlWhatsapp, '_blank');
+
+    // Limpa o carrinho após enviar o pedido
+    carrinho = [];
+    salvarCarrinhoNoLocalStorage();
+    fecharModalCarrinho(); // Fecha o modal
+    atualizarContadorCarrinho(); // Zera o contador visual
 }
 
 function removerItemDoCarrinho(productId) {
