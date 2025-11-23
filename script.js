@@ -266,35 +266,15 @@ function gerenciarBotaoVoltarAoTopo() {
     });
 }
 
-// 9. Função para criar e injetar o ícone do carrinho no header
-function criarIconeCarrinho() {
-    const header = document.querySelector("header");
-    if (!header) return;
-
-    const cartIconContainer = document.createElement("div");
-    cartIconContainer.classList.add("cart-icon-container");
-    cartIconContainer.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="9" cy="21" r="1"></circle>
-            <circle cx="20" cy="21" r="1"></circle>
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-        </svg>
-        <span id="cart-counter" class="cart-counter">0</span>
-    `;
-    header.appendChild(cartIconContainer);
-}
-
 // 10. Função para atualizar o contador visual do carrinho
 function atualizarContadorCarrinho() {
     const cartCounter = document.getElementById("cart-counter");
     if (cartCounter) {
-        cartCounter.textContent = carrinho.length;
-        // Adiciona uma classe para animação quando um item é adicionado
+        // Soma a quantidade de todos os itens no carrinho
+        const totalItens = carrinho.reduce((total, item) => total + item.quantidade, 0);
+        cartCounter.textContent = totalItens;
         cartCounter.classList.add('updated');
-        // Remove a classe após a animação para que possa ser reativada
-        setTimeout(() => {
-            cartCounter.classList.remove('updated');
-        }, 300);
+        setTimeout(() => cartCounter.classList.remove('updated'), 300);
     }
 }
 
@@ -421,16 +401,16 @@ function renderizarItensCarrinho() {
                         <span class="cart-item-name">${item.nome}</span>
                         <span class="cart-item-unit-price">${item.preco} (unid.)</span>
                     </div>
-                    <div class="cart-item-quantity">
+                    <div class="cart-item-controls">
                         <button class="quantity-btn" data-action="decrease" aria-label="Diminuir quantidade">-</button>
                         <span class="quantity-value">${item.quantidade}</span>
                         <button class="quantity-btn" data-action="increase" aria-label="Aumentar quantidade">+</button>
                     </div>
                     <span class="cart-item-subtotal">${subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                    <button class="cart-item-remove" aria-label="Remover item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                    </button>
                 </div>
+                <button class="cart-item-remove" aria-label="Remover item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                </button>
             `;
             ul.appendChild(li);
         });
@@ -491,6 +471,18 @@ function fecharModalCarrinho() {
     document.body.classList.remove('body-no-scroll');
 }
 
+// 10. Função para atualizar o contador visual do carrinho
+function atualizarContadorCarrinho() {
+    const cartCounter = document.getElementById("cart-counter");
+    if (cartCounter) {
+        // Soma a quantidade de todos os itens no carrinho
+        const totalItens = carrinho.reduce((total, item) => total + item.quantidade, 0);
+        cartCounter.textContent = totalItens;
+        cartCounter.classList.add('updated');
+        setTimeout(() => cartCounter.classList.remove('updated'), 300);
+    }
+}
+
 // 9. Função para criar e injetar o ícone do carrinho no header
 function criarIconeCarrinho() {
     const header = document.querySelector("header");
@@ -512,17 +504,7 @@ function criarIconeCarrinho() {
     cartIconContainer.addEventListener('click', abrirModalCarrinho);
 }
 
-// 10. Função para atualizar o contador visual do carrinho
-function atualizarContadorCarrinho() {
-    const cartCounter = document.getElementById("cart-counter");
-    if (cartCounter) {
-        // Soma a quantidade de todos os itens no carrinho
-        const totalItens = carrinho.reduce((total, item) => total + item.quantidade, 0);
-        cartCounter.textContent = totalItens;
-        cartCounter.classList.add('updated');
-        setTimeout(() => cartCounter.classList.remove('updated'), 300);
-    }
-}
+// Função para carregar o carrinho salvo no Local Storage
 function carregarCarrinhoDoLocalStorage() {
     const carrinhoSalvo = localStorage.getItem('meuCarrinho');
     if (carrinhoSalvo) {
