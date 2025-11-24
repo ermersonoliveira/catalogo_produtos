@@ -68,7 +68,7 @@ header {
     position: sticky; /* Mantém o cabeçalho fixo no topo ao rolar a página */
     top: 0; /* Posição do topo quando sticky */
     background: var(--bg-color); /* Cor de fundo do cabeçalho */
-    z-index: 11; /* Garante que o header fique sobre o menu de categorias (z-index: 9) */
+    z-index: 100; /* Garante que o header fique sobre o menu de categorias (z-index: 9) e outros elementos como a busca mobile (z-index: 11) */
 } 
 
 /* --- Main Content --- */
