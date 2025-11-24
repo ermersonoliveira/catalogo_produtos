@@ -224,17 +224,19 @@ function adicionarListenersGlobais() {
             searchMenuItem.classList.toggle("active");
             DOM.inputBusca.focus();
         }
-    });
 
-    // Listener para fechar a busca ao clicar fora (mobile)
-    document.addEventListener("click", (e) => {
-        // Verifica se a busca está ativa e se o clique foi fora do componente de busca
-        if (searchMenuItem.classList.contains("active") && !searchMenuItem.contains(e.target) && e.target.id !== 'search-icon-mobile') {
-            searchMenuItem.classList.remove("active");
+        // Listener para o ícone do carrinho (delegado)
+        const cartIcon = target.closest(".cart-icon-container");
+        if (cartIcon) {
+            e.preventDefault();
+            abrirModalCarrinho();
         }
 
-        // Impede que o menu de busca mobile feche ao clicar dentro dele
-        if (e.target.closest('.search-menu-item')) e.stopPropagation();
+        // Lógica para fechar a busca mobile ao clicar fora
+        const searchMenuItem = document.querySelector(".search-menu-item");
+        if (searchMenuItem && searchMenuItem.classList.contains("active") && !target.closest('.search-menu-item')) {
+            searchMenuItem.classList.remove("active");
+        }
     });
 }
 
@@ -667,8 +669,6 @@ function criarIconeCarrinho() {
     `;
     DOM.header.appendChild(cartIconContainer);
 
-    // Adiciona o evento de clique para abrir o modal
-    cartIconContainer.addEventListener('click', abrirModalCarrinho);
 }
 
 // Função para carregar o carrinho salvo no Local Storage
