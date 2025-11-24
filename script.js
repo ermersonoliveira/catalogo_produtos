@@ -232,10 +232,12 @@ function adicionarListenersGlobais() {
             abrirModalCarrinho();
         }
 
-        // Lógica para fechar a busca mobile ao clicar fora
-        const searchMenuItem = document.querySelector(".search-menu-item");
-        if (searchMenuItem && searchMenuItem.classList.contains("active") && !target.closest('.search-menu-item')) {
-            searchMenuItem.classList.remove("active");
+        // SOMENTE SE o clique não foi no carrinho, verifica se foi fora da busca para fechá-la
+        else {
+            const searchMenuItem = document.querySelector(".search-menu-item");
+            if (searchMenuItem && searchMenuItem.classList.contains("active") && !target.closest('.search-menu-item')) {
+                searchMenuItem.classList.remove("active");
+            }
         }
     });
 }
