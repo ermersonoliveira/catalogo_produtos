@@ -4,7 +4,12 @@
         "nome": "Creatina Max Titanium",
         "descricao":"O suplemento mais estudado e comprovado pela ciência",
         "link":"https://www.maxtitanium.com.br/creatine-pote-300g/p?skuid=31",
-        "imagem": "https://cdn.awsli.com.br/800x800/1563/1563255/produto/237823815/max-crea-u1ttfuwwu0.png",
+        "imagens": [
+            "https://lojamaxtitanium.vtexassets.com/arquivos/ids/157717-1920-0/creatine-max-titanium-300g-1.jpg",
+            "https://lojamaxtitanium.vtexassets.com/arquivos/ids/157719-1920-0/creatine-max-titanium-300g-2.jpg",
+            "https://lojamaxtitanium.vtexassets.com/arquivos/ids/157720-1920-0/creatine-max-titanium-300g-3.jpg",
+            "https://lojamaxtitanium.vtexassets.com/arquivos/ids/158149-1920-0/Tabela-creatina-300g.png"
+        ],
         "preco": "R$ 89,90",
         "categoria": "creatina"
     }
@@ -14,17 +19,24 @@
         "nome": "Creatina Probiótica",
         "descricao":"O suplemento mais estudado e comprovado pela ciência",
         "link":"https://www.probiotica.com.br/creatine-pote-300g/p?skuid=31",
-        "imagem": "https://cdn.shoppub.io/cdn-cgi/image/w=1000,h=1000,q=80,f=auto/gsn/media/uploads/produtos/foto/vipkdiri/creatina-300g-probiotica.png",
+        "imagens": [
+            "https://supleylab.vtexassets.com/arquivos/ids/158617-1920-0/PROB-CREATINA-300g.jpg.jpg",
+            "https://supleylab.vtexassets.com/arquivos/ids/158618-1920-0/PROB-CREATINA-300g-VERSO.jpg.jpg",
+            "https://supleylab.vtexassets.com/arquivos/ids/158619-1920-0/Tabela-creatina-300g.png"
+        ],
         "preco": "R$ 75,50",
         "categoria": "creatina"
     },
     {
         "id": 3,
-        "nome": "Whey Protein Concentrado Growth",
+        "nome": "Whey Protein Growth",
         "descricao":"Proteína de alto valor biológico para auxiliar na recuperação muscular.",
-        "link":"https://www.gsuplementos.com.br/whey-protein-concentrado-1kg-growth-supplements-p985936",
-        "imagem": "https://i.promobit.com.br/268/839410190517635043115698094861.png",
-        "preco": "R$ 99,00",
+        "link":"https://www.gsuplementos.com.br/upload/produto/layout/185/alterado01-v2.webp",
+        "imagens": [
+            "https://product-data.raiadrogasil.io/images/5217208.webp",
+            "https://cdn.awsli.com.br/2690/2690062/produto/2546265891359b65d16.jpg"
+        ],
+        "preco": "R$ 109,00",
         "categoria": "whey"
     },
     {
@@ -32,44 +44,66 @@
         "nome": "Pré-treino Égide Max Titanium",
         "descricao":"Fornece energia e foco para treinos mais intensos.",
         "link":"https://www.maxtitanium.com.br/egide-pre-treino/p",
-        "imagem": "https://lojamaxtitanium.vtexassets.com/arquivos/ids/156171/Design-sem-nome--1-.png",
+        "imagens": [
+            "https://lojamaxtitanium.vtexassets.com/arquivos/ids/157395-1920-0/egide-max-titanium-300g-frutas-vermelhas-1.jpg",
+            "https://lojamaxtitanium.vtexassets.com/arquivos/ids/157393-1920-0/egide-max-titanium-300g-frutas-vermelhas-3.jpg",
+            "https://lojamaxtitanium.vtexassets.com/arquivos/ids/157394-1920-0/egide-max-titanium-300g-frutas-vermelhas-2.jpg",
+            "https://lojamaxtitanium.vtexassets.com/arquivos/ids/158470-1920-0/imagem--4-.png"
+        ],
         "preco": "R$ 125,00",
         "categoria": "pré-treino"
     },
     {
         "id": 5,
-        "nome": "Multivitamínico Growth",
+        "nome": "Multimax Complex 90 Caps",
         "descricao":"Complexo de vitaminas e minerais essenciais para o dia a dia.",
         "link":"https://www.gsuplementos.com.br/multivitaminico-120-caps-growth-supplements-p985943",
-        "imagem": "https://shopmaromba.com.br/wp-content/uploads/2023/08/MULTIVITAMINICO-120CAPS.png",
+        "imagens": [
+            "https://lojamaxtitanium.vtexassets.com/arquivos/ids/157556-1920-0/multimax-complex-max-titanium-90-capsulas-1.jpg",
+            "https://lojamaxtitanium.vtexassets.com/arquivos/ids/157554-1920-0/multimax-complex-max-titanium-90-capsulas-3.jpg",
+            "https://lojamaxtitanium.vtexassets.com/arquivos/ids/157555-1920-0/multimax-complex-max-titanium-90-capsulas-2.jpg",
+            "https://lojamaxtitanium.vtexassets.com/arquivos/ids/156800-1920-0/TN-MULTIMAX-90CPS-.png"
+        ],
         "preco": "R$ 39,90",
         "categoria": "multivitamínico"
     },
     {
         "id": 6,
-        "nome": "Vitamina C",
-        "descricao":"A vitamina C (ácido ascórbico) é um nutriente essencial que o corpo não produz e precisa ser obtido por meio de alimentos ou suplementos.",
+        "nome": "Vitamina C + Zinco",
+        "descricao":"VIT-C + Zinco combina em sua fórmula a vitamina C (ácido ascórbico) e o zinco.",
         "link":"https://www.gsuplementos.com.br/multivitaminico-120-caps-growth-supplements-p985943",
-        "imagem": "https://www.lojatiaraju.com.br/media/catalog/product/cache/e0c29fa99638964d54a149e46cdfd03e/v/i/vitamina_c_sf.png",
-        "preco": "R$ 39,90",
+        "imagens": [
+            "https://images.tcdn.com.br/img/img_prod/1254911/vit_c_zinco_87_1_8d4f116e850065f4232a470a92b2fc38.png"
+        ],
+        "preco": "R$ 29,90",
         "categoria": "vitaminas"
     },
     {
         "id": 7,
-        "nome": "BCAA Growth",
-        "descricao":"O BCAA é a sigla para Branched Chain Amino Acids, isto é, aminoácidos de cadeia ramificada.",
+        "nome": "BCAA Max titanium",
+        "descricao":"O que são os BCAAs? São 3 dos 9 aminoácidos chamados essenciais (que o corpo é incapaz de produzir).",
         "link":"https://www.gsuplementos.com.br/multivitaminico-120-caps-growth-supplements-p985943",
-        "imagem": "https://i.zst.com.br/thumbs/12/2f/14/-1103450211.jpg",
-        "preco": "R$ 39,90",
+        "imagens": [
+            "https://lojamaxtitanium.vtexassets.com/arquivos/ids/157359-1920-0/bcaa-2400-max-titanium-60-capsulas-1.jpg",
+            "https://lojamaxtitanium.vtexassets.com/arquivos/ids/157357-1920-0/bcaa-2400-max-titanium-60-capsulas-3.jpg",
+            "https://lojamaxtitanium.vtexassets.com/arquivos/ids/157358-1920-0/bcaa-2400-max-titanium-60-capsulas-2.jpg",
+            "https://lojamaxtitanium.vtexassets.com/arquivos/ids/157155-1920-0/TN-BCAA-60CPS.png"
+        ],
+        "preco": "R$ 19,90",
         "categoria": "aminoácidos"
     }
     ,
     {
         "id": 8,
         "nome": "Pré-treino Évora PW",
-        "descricao":"Os ativos criam as condições adequadas para a realização dos treinos mais intensos, retardando o desgaste físico.",
+        "descricao":"Os ativos criam as condições adequadas para a realização de treinos intensos, retardando o desgaste físico.",
         "link":"https://www.gsuplementos.com.br/multivitaminico-120-caps-growth-supplements-p985943",
-        "imagem": "https://cdn.awsli.com.br/2404/2404599/produto/169451737c62c5c1c55.jpg",
+        "imagens": [
+            "https://cdn.shoppub.io/cdn-cgi/image/w=1000,h=1000,q=80,f=auto/gsn/media/uploads/produtos/foto/esyyqkbc/frutasvermelhas.png",
+            "https://cdn.awsli.com.br/2500x2500/26/26926/produto/62820435/5-iu1ytgfbak.webp",
+            "https://cdn.awsli.com.br/2500x2500/1907/1907633/produto/347315031/167592-1200-auto-cycag93vf4.png",
+            "https://cdn.awsli.com.br/2296/2296562/produto/217686596df0f333d0f.jpg"
+        ],
         "preco": "R$ 89,90",
         "categoria": "pré-treino"
     }

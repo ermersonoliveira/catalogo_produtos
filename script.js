@@ -1,13 +1,23 @@
-let cardContainer = document.querySelector(".card-container");
-const inputBusca = document.querySelector("#input-busca");
-const botaoBusca = document.querySelector("#botao-busca");
-const mainElement = document.querySelector("main");
+// Seletores de elementos do DOM centralizados
+const DOM = {
+    cardContainer: document.querySelector(".card-container"),
+    inputBusca: document.querySelector("#input-busca"),
+    botaoBusca: document.querySelector("#botao-busca"),
+    mainElement: document.querySelector("main"),
+    header: document.querySelector("header"),
+};
 
+// Estado da aplicação
 let dados = [];
 let carrinho = [];
 let closeModalTimer = null; // Timer para fechar o modal automaticamente
 
-// 1. Função para carregar os dados do JSON e renderizar todos os produtos na tela
+// Funções Utilitárias
+const removerAcentos = (texto) => texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+const formatarPrecoParaNumero = (preco) => parseFloat(preco.replace('R$', '').replace('.', '').replace(',', '.').trim());
+const formatarNumeroParaBRL = (numero) => numero.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+// 1. Função de inicialização da aplicação
 async function carregarProdutos() {
     let resposta = await fetch("data.json");
     dados = await resposta.json();
@@ -15,23 +25,16 @@ async function carregarProdutos() {
     criarIconeCarrinho();
     renderizarCards(dados);
     criarMenuCategorias();
-    ajustarPosicaoMenuCategoria(); // Adicionado para ajustar a posição do menu
-    adicionarListenersCategorias();
+    adicionarListenersGlobais();
     carregarCarrinhoDoLocalStorage(); // Carrega o carrinho ao iniciar
 }
 
 // 2. Função para filtrar os produtos com base no termo de busca
 function buscarProdutos() {
-    // Função auxiliar para remover acentos de uma string
-    const removerAcentos = (texto) => {
-        return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }
-
-    const termoBuscado = removerAcentos(inputBusca.value.toLowerCase());
+    const termoBuscado = removerAcentos(DOM.inputBusca.value.toLowerCase());
     
     // Filtra o array 'dados' procurando pelo termo no nome ou na descrição
     const produtosFiltrados = dados.filter(dado => {
-        // Normaliza também os dados do produto antes de comparar
         return removerAcentos(dado.nome.toLowerCase()).includes(termoBuscado) ||
                removerAcentos(dado.descricao.toLowerCase()).includes(termoBuscado);
     });
@@ -46,19 +49,34 @@ function buscarProdutos() {
     }
 
     // Limpa o campo de busca após a pesquisa
-    inputBusca.value = "";
+    DOM.inputBusca.value = "";
 }
 
 // 3. Função para renderizar os cards na tela
 function renderizarCards(dados) {
     // Limpa o container para não duplicar os produtos a cada busca
-    cardContainer.innerHTML = "";
+    DOM.cardContainer.innerHTML = "";
 
     for (let dado of dados) {
         let article = document.createElement("article");
         article.classList.add("card");
         article.innerHTML = `
-        <img src="${dado.imagem}" alt="Imagem do produto ${dado.nome}">
+        <div class="carousel-container" data-card-id="${dado.id}" data-single-image="${dado.imagens.length === 1}">
+            <div class="carousel-track">
+                ${dado.imagens.map(img => `<img src="${img}" alt="Imagem do produto ${dado.nome}" class="carousel-slide">`).join('')}
+            </div>
+            ${dado.imagens.length > 1 ? `
+                <button class="carousel-btn prev" aria-label="Imagem anterior">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <button class="carousel-btn next" aria-label="Próxima imagem">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+                <div class="carousel-dots">
+                    ${dado.imagens.map((_, index) => `<span class="carousel-dot ${index === 0 ? 'active' : ''}" data-slide-to="${index}"></span>`).join('')}
+                </div>
+            ` : ''}
+        </div>
         <h2>${dado.nome}</h2>
         <p>${dado.descricao}</p>
         <a href="#" class="product-category" data-category="${dado.categoria.toLowerCase()}">${dado.categoria}</a>
@@ -75,8 +93,19 @@ function renderizarCards(dados) {
             <button class="btn-adicionar-carrinho" data-id="${dado.id}">Adicionar ao carrinho</button>
         </div>
         `
-        cardContainer.appendChild(article);
+        DOM.cardContainer.appendChild(article);
     }
+
+    // Após renderizar todos os cards, inicializa os carrosseis
+    inicializarCarrosseis();
+
+    // Adiciona a classe para animar a entrada dos cards.
+    // Usamos um pequeno timeout para garantir que o navegador processe
+    // a adição dos cards ao DOM antes de iniciar a transição.
+    setTimeout(() => {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => card.classList.add('card-visible'));
+    }, 50); // 50ms é suficiente
 }
 
 // 4. Função para criar e injetar o menu de categorias
@@ -91,7 +120,6 @@ function criarMenuCategorias() {
     // Converte o Set para um Array, ordena em ordem alfabética e adiciona "Todos" no início.
     const categorias = ["Todos", ...Array.from(categoriasUnicas).sort()];
 
-    const headerSearchContainer = document.querySelector("header .search-container");
     const nav = document.createElement("nav");
     nav.classList.add("category-menu");
 
@@ -108,9 +136,6 @@ function criarMenuCategorias() {
         if (categoria === "Todos") {
             a.classList.add("active");
         }
-        // Adiciona um atributo de dados para facilitar o filtro.
-        // Usamos toLowerCase() para garantir consistência, já que o filtro também usa.
-        // O texto exibido (a.textContent) mantém a capitalização original.
         a.dataset.category = categoria.toLowerCase(); 
         li.appendChild(a);
         ul.appendChild(li);
@@ -127,17 +152,19 @@ function criarMenuCategorias() {
             </svg>
         </a>
     `;
+    const headerSearchContainer = DOM.header.querySelector(".search-container");
     // Move o container de busca do header para dentro do item de lista no menu
     searchLi.appendChild(headerSearchContainer);
     ul.prepend(searchLi); // Adiciona o item de busca no início da lista
 
-    // Garante que o input e o botão tenham os IDs corretos para os listeners existentes
-    headerSearchContainer.querySelector('input').id = 'input-busca';
-    headerSearchContainer.querySelector('button').id = 'botao-busca';
-
     nav.appendChild(ul);
     // Insere o menu antes do elemento <main>
-    document.body.insertBefore(nav, mainElement);
+    document.body.insertBefore(nav, DOM.mainElement);
+
+    // Ajusta a posição do menu de categorias dinamicamente
+    const categoryMenu = document.querySelector(".category-menu");
+    const observer = new ResizeObserver(() => categoryMenu.style.top = `${DOM.header.offsetHeight}px`);
+    observer.observe(DOM.header);
 }
 
 // 5. Função centralizada para filtrar produtos e atualizar a UI
@@ -152,54 +179,51 @@ function filtrarPorCategoria(categoriaSelecionada) {
         }
     });
 
-    // Filtra e renderiza os produtos
-    if (categoriaSelecionada === "todos") {
-        renderizarCards(dados); // Mostra todos os produtos
-    } else {
-        // Compara as categorias em minúsculas para garantir que o filtro funcione
-        // independentemente da capitalização ("Aminoácidos" vs "aminoácidos").
-        const produtosFiltrados = dados.filter(dado => dado.categoria.toLowerCase() === categoriaSelecionada);
-        renderizarCards(produtosFiltrados);
-    }
+    // Inicia a animação de fade-out dos cards atuais
+    const cardsAtuais = document.querySelectorAll('.card');
+    cardsAtuais.forEach(card => card.classList.remove('card-visible'));
+
+    // Aguarda a animação de fade-out terminar (300ms) antes de renderizar os novos cards
+    setTimeout(() => {
+        // Filtra e renderiza os produtos
+        if (categoriaSelecionada === "todos") {
+            renderizarCards(dados); // Mostra todos os produtos
+        } else {
+            const produtosFiltrados = dados.filter(dado => dado.categoria.toLowerCase() === categoriaSelecionada);
+            renderizarCards(produtosFiltrados);
+        }
+    }, 300); // Este tempo deve ser igual à duração da transição no CSS
 }
 
 // 6. Função para adicionar os listeners de clique
-function adicionarListenersCategorias() {
-    const menuCategorias = document.getElementById("category-list");
-    // Listener para o menu principal
-    menuCategorias.addEventListener("click", (e) => {
-        if (e.target.tagName === "A") {
-            e.preventDefault();
-            filtrarPorCategoria(e.target.dataset.category);
-        }
-        // Impede que o menu de busca mobile feche ao clicar dentro dele
-        if (e.target.closest('.search-menu-item')) {
-            e.stopPropagation();
-        }
-    });
+function adicionarListenersGlobais() {
+    // Delegação de eventos para cliques no corpo do documento
+    document.body.addEventListener("click", (e) => {
+        const target = e.target;
 
-    // Listener para as tags nos cards (usando delegação de evento)
-    cardContainer.addEventListener("click", (e) => {
-        if (e.target.classList.contains("product-category")) {
+        // Filtro por categoria (menu ou card)
+        const categoryLink = target.closest('.product-category, .category-menu a');
+        if (categoryLink && !categoryLink.id?.includes('search-icon')) {
             e.preventDefault();
-            filtrarPorCategoria(e.target.dataset.category);
+            filtrarPorCategoria(categoryLink.dataset.category);
         }
 
         // Listener para o botão "Adicionar ao carrinho"
-        if (e.target.classList.contains("btn-adicionar-carrinho")) {
+        const addToCartBtn = target.closest(".btn-adicionar-carrinho");
+        if (addToCartBtn) {
             e.preventDefault();
-            const productId = parseInt(e.target.dataset.id, 10);
-            adicionarAoCarrinho(productId, e.target);
+            const productId = parseInt(addToCartBtn.dataset.id, 10);
+            adicionarAoCarrinho(productId, addToCartBtn);
         }
-    });
 
-    // Listener para o ícone de busca mobile
-    const searchIconMobile = document.getElementById("search-icon-mobile");
-    const searchMenuItem = document.querySelector(".search-menu-item");
-    searchIconMobile.addEventListener("click", (e) => {
-        e.preventDefault();
-        searchMenuItem.classList.toggle("active");
-        document.getElementById("input-busca").focus();
+        // Listener para o ícone de busca mobile
+        const searchIconMobile = target.closest("#search-icon-mobile");
+        if (searchIconMobile) {
+            e.preventDefault();
+            const searchMenuItem = searchIconMobile.closest(".search-menu-item");
+            searchMenuItem.classList.toggle("active");
+            DOM.inputBusca.focus();
+        }
     });
 
     // Listener para fechar a busca ao clicar fora (mobile)
@@ -208,29 +232,110 @@ function adicionarListenersCategorias() {
         if (searchMenuItem.classList.contains("active") && !searchMenuItem.contains(e.target) && e.target.id !== 'search-icon-mobile') {
             searchMenuItem.classList.remove("active");
         }
+
+        // Impede que o menu de busca mobile feche ao clicar dentro dele
+        if (e.target.closest('.search-menu-item')) e.stopPropagation();
     });
 }
 
-// 7. Função para ajustar a posição 'top' do menu de categorias dinamicamente
-function ajustarPosicaoMenuCategoria() {
-    const header = document.querySelector("header");
-    const categoryMenu = document.querySelector(".category-menu");
+// Funções do Carrossel
+// =================================================================
 
-    if (!header || !categoryMenu) return;
+// Inicializa todos os carrosseis na página com funcionalidade de swipe
+function inicializarCarrosseis() {
+    const carrosseis = document.querySelectorAll('.carousel-container');
+    carrosseis.forEach(carousel => {
+        if (carousel.dataset.singleImage === 'true') return;
 
-    // Função que calcula e aplica a posição
-    const ajustarTop = () => {
-        const headerHeight = header.offsetHeight;
-        categoryMenu.style.top = `${headerHeight}px`;
-    };
+        const track = carousel.querySelector('.carousel-track');
+        const slides = Array.from(track.children);
+        const slideCount = slides.length;
+        const nextButton = carousel.querySelector('.carousel-btn.next');
+        const prevButton = carousel.querySelector('.carousel-btn.prev');
+        const dotsNav = carousel.querySelector('.carousel-dots');
+        const dots = dotsNav ? Array.from(dotsNav.children) : [];
 
-    // Ajusta a posição na primeira carga
-    ajustarTop();
+        let slideIndex = 0;
+        let isDragging = false;
+        let startPos = 0;
+        let currentTranslate = 0;
+        let prevTranslate = 0;
 
-    // Usa ResizeObserver para reajustar caso a altura do header mude (ex: rotação do dispositivo)
-    // Esta é uma boa prática para garantir que o layout não quebre dinamicamente.
-    const observer = new ResizeObserver(ajustarTop);
-    observer.observe(header);
+        const setPositionByIndex = () => {
+            currentTranslate = slideIndex * -carousel.offsetWidth;
+            prevTranslate = currentTranslate;
+            track.style.transform = `translateX(${currentTranslate}px)`;
+        };
+
+        const moverParaSlide = (index) => {
+            slideIndex = index;
+            setPositionByIndex();
+            track.style.transition = 'transform 0.4s ease-in-out';
+
+            if (dots.length > 0) {
+                dots.forEach(dot => dot.classList.remove('active'));
+                dots[index].classList.add('active');
+            }
+        };
+
+        nextButton.addEventListener('click', () => moverParaSlide((slideIndex + 1) % slideCount));
+        prevButton.addEventListener('click', () => moverParaSlide((slideIndex - 1 + slideCount) % slideCount));
+        dotsNav.addEventListener('click', e => {
+            const targetDot = e.target.closest('.carousel-dot');
+            if (!targetDot) return;
+            moverParaSlide(parseInt(targetDot.dataset.slideTo, 10));
+        });
+
+        const getPositionX = (event) => event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+
+        const dragStart = (event) => {
+            isDragging = true;
+            startPos = getPositionX(event);
+            track.style.transition = 'none'; // Remove a transição durante o arraste
+            carousel.style.cursor = 'grabbing';
+        };
+
+        const dragMove = (event) => {
+            if (!isDragging) return;
+            const currentPosition = getPositionX(event);
+            currentTranslate = prevTranslate + currentPosition - startPos;
+            track.style.transform = `translateX(${currentTranslate}px)`;
+        };
+
+        const dragEnd = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            const movedBy = currentTranslate - prevTranslate;
+            carousel.style.cursor = 'grab';
+
+            // Se o usuário arrastou mais de 50px, muda de slide
+            if (movedBy < -50 && slideIndex < slideCount - 1) {
+                slideIndex++;
+            }
+            if (movedBy > 50 && slideIndex > 0) {
+                slideIndex--;
+            }
+
+            moverParaSlide(slideIndex);
+        };
+
+        // Adiciona os listeners de evento
+        carousel.addEventListener('mousedown', dragStart);
+        carousel.addEventListener('touchstart', dragStart, { passive: true });
+
+        carousel.addEventListener('mousemove', dragMove);
+        carousel.addEventListener('touchmove', dragMove, { passive: true });
+
+        carousel.addEventListener('mouseup', dragEnd);
+        carousel.addEventListener('mouseleave', dragEnd); // Termina o arraste se o mouse sair do carrossel
+        carousel.addEventListener('touchend', dragEnd);
+
+        // Previne o comportamento padrão de arrastar imagem do navegador
+        slides.forEach(slide => slide.addEventListener('dragstart', (e) => e.preventDefault()));
+
+        // Ajusta a posição se a janela for redimensionada
+        window.addEventListener('resize', setPositionByIndex);
+    });
 }
 
 // 8. Função para criar e gerenciar o botão "Voltar ao Topo"
@@ -289,7 +394,7 @@ function adicionarAoCarrinho(productId, buttonElement) {
     } else {
         // Se não existe, encontra o produto nos dados e adiciona ao carrinho com quantidade 1
         const produto = dados.find(d => d.id === productId);
-        if (!produto) return; // Produto não encontrado nos dados
+        if (!produto) return; 
         carrinho.push(produto);
         // Adiciona a propriedade quantidade. É importante clonar o objeto para não alterar o 'dados' original.
         carrinho[carrinho.length - 1] = { ...produto, quantidade: 1 };
@@ -409,23 +514,22 @@ function renderizarItensCarrinho() {
         let totalGeral = 0;
 
         carrinho.forEach(item => {
-            // Converte o preço "R$ 89,90" para um número 89.90
-            const precoNumerico = parseFloat(item.preco.replace('R$', '').replace('.', '').replace(',', '.').trim());
+            const precoNumerico = formatarPrecoParaNumero(item.preco);
             const subtotal = precoNumerico * item.quantidade;
             totalGeral += subtotal;
 
             const li = document.createElement('li');
             li.classList.add('cart-item');
-            li.dataset.id = item.id; // Adiciona o ID do produto ao elemento LI
+            li.dataset.id = item.id;
 
             li.innerHTML = `
-                <img src="${item.imagem}" alt="${item.nome}" class="cart-item-img">
+                <img src="${item.imagens[0]}" alt="${item.nome}" class="cart-item-img">
                 <div class="cart-item-info"> 
-                    <div class="cart-item-main">
-                        <div class="cart-item-details">
-                            <span class="cart-item-name">${item.nome}</span>
-                            <span class="cart-item-unit-price">${item.preco} (unid.)</span>
-                        </div>
+                    <div class="cart-item-details">
+                        <span class="cart-item-name">${item.nome}</span>
+                        <span class="cart-item-unit-price">${item.preco} (unid.)</span>
+                    </div>
+                    <div class="cart-item-main">                        
                         <div class="cart-item-controls">
                             <button class="quantity-btn" data-action="decrease" aria-label="Diminuir quantidade">-</button>
                             <span class="quantity-value">${item.quantidade}</span>
@@ -433,7 +537,7 @@ function renderizarItensCarrinho() {
                         </div>
                     </div>
                     <span class="cart-item-subtotal">${subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                </div>
+                </div>                
                 <button class="cart-item-remove" aria-label="Remover item">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                 </button>
@@ -446,7 +550,7 @@ function renderizarItensCarrinho() {
         const totalContainer = cartFooter.querySelector('.cart-total');
         totalContainer.innerHTML = `
             <span>Total Geral:</span>
-            <span class="total-price">${totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+            <span class="total-price">${formatarNumeroParaBRL(totalGeral)}</span>
         `;
         cartFooter.style.display = 'flex'; // Mostra o rodapé
     }
@@ -487,23 +591,21 @@ function finalizarPedido() {
     let mensagem = "Olá! Gostaria de fazer o seguinte pedido:\n\n";
     let totalGeral = 0;
 
-    // Monta a mensagem com os detalhes de cada item
     carrinho.forEach(item => {
-        const precoNumerico = parseFloat(item.preco.replace('R$', '').replace('.', '').replace(',', '.').trim());
+        const precoNumerico = formatarPrecoParaNumero(item.preco);
         const subtotal = precoNumerico * item.quantidade;
         totalGeral += subtotal;
         mensagem += `*Produto:* ${item.nome}\n`;
         mensagem += `*Quantidade:* ${item.quantidade}\n`;
-        mensagem += `*Subtotal:* ${subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n`;
+        mensagem += `*Subtotal:* ${formatarNumeroParaBRL(subtotal)}\n`;
         mensagem += "--------------------------------------\n";
     });
 
-    // Adiciona o total geral à mensagem
-    mensagem += `\n*TOTAL GERAL:* ${totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+    mensagem += `\n*TOTAL GERAL:* ${formatarNumeroParaBRL(totalGeral)}`;
 
     // Codifica a mensagem para ser usada em uma URL
     const mensagemCodificada = encodeURIComponent(mensagem);
-    const urlWhatsapp = `https://wa.me/${numeroWhatsapp}?text=${mensagemCodificada}`;
+    const urlWhatsapp = `https://api.whatsapp.com/send?phone=${numeroWhatsapp}&text=${mensagemCodificada}`;
 
     // Abre o WhatsApp em uma nova aba
     window.open(urlWhatsapp, '_blank');
@@ -511,12 +613,11 @@ function finalizarPedido() {
     // Fecha o modal do carrinho imediatamente para o usuário ver a página principal.
     fecharModalCarrinho();
 
-    // Aguarda 5 segundos antes de limpar o carrinho.
-    // Isso dá tempo para o usuário confirmar o envio no WhatsApp sem perder os dados do carrinho instantaneamente.
+    // Limpa o carrinho após um tempo para dar ao usuário a chance de confirmar o envio no WhatsApp.
     setTimeout(() => {
         carrinho = [];
         salvarCarrinhoNoLocalStorage();
-        atualizarContadorCarrinho(); // Zera o contador visual após o tempo de espera
+        atualizarContadorCarrinho();
     }, 5000); // 5000 milissegundos = 5 segundos
 }
 
@@ -527,15 +628,10 @@ function removerItemDoCarrinho(productId) {
         // Adiciona uma classe para iniciar a animação de remoção via CSS
         itemElement.classList.add('removing');
 
-        // Aguarda a animação terminar (300ms, conforme definido no CSS) para então remover o item
-        // do array e re-renderizar o carrinho para atualizar o total.
         setTimeout(() => {
-            // Filtra o carrinho, mantendo apenas os itens que NÃO têm o productId
             carrinho = carrinho.filter(item => item.id !== productId);
-
             salvarCarrinhoNoLocalStorage();
             atualizarContadorCarrinho();
-            // Re-renderiza os itens no modal se ele estiver aberto
             renderizarItensCarrinho();
 
         }, 300); // O tempo deve ser igual à duração da transição no CSS
@@ -557,23 +653,8 @@ function fecharModalCarrinho() {
     document.body.classList.remove('body-no-scroll');
 }
 
-// 10. Função para atualizar o contador visual do carrinho
-function atualizarContadorCarrinho() {
-    const cartCounter = document.getElementById("cart-counter");
-    if (cartCounter) {
-        // Soma a quantidade de todos os itens no carrinho
-        const totalItens = carrinho.reduce((total, item) => total + item.quantidade, 0);
-        cartCounter.textContent = totalItens;
-        cartCounter.classList.add('updated');
-        setTimeout(() => cartCounter.classList.remove('updated'), 300);
-    }
-}
-
 // 9. Função para criar e injetar o ícone do carrinho no header
 function criarIconeCarrinho() {
-    const header = document.querySelector("header");
-    if (!header) return;
-
     const cartIconContainer = document.createElement("div");
     cartIconContainer.classList.add("cart-icon-container");
     cartIconContainer.innerHTML = `
@@ -584,7 +665,7 @@ function criarIconeCarrinho() {
         </svg>
         <span id="cart-counter" class="cart-counter">0</span>
     `;
-    header.appendChild(cartIconContainer);
+    DOM.header.appendChild(cartIconContainer);
 
     // Adiciona o evento de clique para abrir o modal
     cartIconContainer.addEventListener('click', abrirModalCarrinho);
@@ -600,7 +681,7 @@ function carregarCarrinhoDoLocalStorage() {
 }
 
 // Adiciona o evento de clique no botão de busca
-botaoBusca.addEventListener("click", buscarProdutos);
+DOM.botaoBusca.addEventListener("click", buscarProdutos);
 
 // Chama a função para carregar os produtos assim que a página é carregada
 carregarProdutos();
